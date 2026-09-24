@@ -1,0 +1,33 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "little-secret-clothesline",
+  "main": "index.js",
+  "compatibility_date": "2026-09-24",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1,
+  },
+  "vars": {
+    "ALLOWED_ORIGINS": "https://nascarjake.github.io,http://127.0.0.1:5173,http://localhost:5173",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "little-secret-clothesline",
+      "migrations_dir": "migrations",
+      "database_id": "7031d7fa-3ca5-4610-b714-638615b588b9",
+    },
+  ],
+  "ratelimits": [
+    {
+      "name": "SUBMISSIONS",
+      "namespace_id": "1924092401",
+      "simple": {
+        "limit": 30,
+        "period": 60,
+      },
+    },
+  ],
+}
