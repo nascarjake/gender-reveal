@@ -14,6 +14,8 @@ import { ShirtRenderer } from "./renderer.js";
 import { getEntries, saveEntry, sharedGallery } from "./gallery.js";
 import { demo, color } from "./config.js";
 import { StickerEditor, paintStickers } from "./sticker-editor.js";
+const uiVersion = new URLSearchParams(window.location.search).get("ui");
+document.body.classList.toggle("ui-v2", uiVersion === "v2");
 let selectedSticker = null,
   finishTab = "decorate";
 let shirt = createShirt(),
@@ -172,6 +174,7 @@ function renderStep() {
         renderStep();
       });
       renderStep();
+      $("#step-content").scrollTop = 0;
       $("#bench-hint").textContent = "One little bundle, ready for its bands.";
       setCanvasLabel(
         "Folded shirt. Click or press Enter to add a rubber band.",
@@ -191,6 +194,7 @@ function renderStep() {
       if (!canAdvance(step, shirt) || animating) return;
       step = 2;
       renderStep();
+      $("#step-content").scrollTop = 0;
       $("#bench-hint").textContent =
         "Tap or drag on the fabric to add your dye.";
       setCanvasLabel(
@@ -245,6 +249,7 @@ function renderStep() {
       if (!canAdvance(step, shirt)) return;
       step = 3;
       renderStep();
+      $("#step-content").scrollTop = 0;
       $("#bench-hint").textContent = "A tiny shirt. A very big moment.";
     };
   } else if (step === 3) {
@@ -505,6 +510,7 @@ function performReveal() {
     step = 4;
     hasRevealed = true;
     renderStep();
+    $("#step-content").scrollTop = 0;
     $("#reveal-badge").hidden = false;
     $("#reveal-kicker").textContent = demo
       ? "THE DEMO SURPRISE"
@@ -669,6 +675,7 @@ function resetShirt() {
   $("#bench-hint").textContent = "Your blank canvas. So many possibilities.";
   setCanvasLabel("Your shirt. Choose a fold to get started.");
   renderStep();
+  $("#step-content").scrollTop = 0;
   draw();
 }
 function startAnotherShirt() {

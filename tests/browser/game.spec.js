@@ -360,3 +360,35 @@ test("touch drag places a band on a phone without scrolling the page", async ({
   expect(await page.evaluate(() => scrollY)).toBe(0);
   await context.close();
 });
+
+test("v2 uses a full-screen mobile game stage while preserving the game flow", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/?ui=v2");
+  await expect(page.locator("body")).toHaveClass(/ui-v2/);
+  const stage = await page.locator(".workbench").boundingBox();
+  const shirt = await page.locator("#shirt-canvas").boundingBox();
+  const tray = await page.locator(".controls").boundingBox();
+  expect(stage.width).toBeGreaterThanOrEqual(389);
+  expect(stage.height).toBeGreaterThanOrEqual(843);
+  expect(shirt.width).toBeGreaterThan(350);
+  expect(shirt.height).toBeGreaterThan(300);
+  expect(tray.y).toBeGreaterThan(400);
+  expect(tray.y + tray.height).toBeLessThanOrEqual(845);
+  expect(
+    await page.evaluate(() => document.documentElement.scrollHeight),
+  ).toBeLessThanOrEqual(845);
+  await page.getByRole("button", { name: "Fold my shirt" }).click();
+  for (let i = 0; i < 3; i++)
+    await page.getByRole("button", { name: /Add a rubber band/ }).click();
+  await page.getByRole("button", { name: "Bring on the dye" }).click();
+  await expect(page.getByRole("button", { name: "Dye B" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Bold" })).toBeVisible();
+  await page.getByRole("button", { name: "Surprise me with a mix" }).click();
+  await page.getByRole("button", { name: "Ready for the surprise" }).click();
+  await page.getByRole("button", { name: "Unfold the surprise" }).click();
+  await expect(
+    page.getByRole("heading", { name: "It’s a girl!" }),
+  ).toBeVisible();
+});

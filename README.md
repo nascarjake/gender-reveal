@@ -15,6 +15,10 @@ npm run dev
 
 The studio uses a custom WebGL fragment shader with no runtime dependencies. Vite builds relative asset paths so it works under a GitHub Pages repository path. Google Fonts are optional; system fonts take over when unavailable.
 
+The original editorial interface remains the default. Add `?ui=v2` to the URL
+to open the full-screen fashion-game interface while using the same game state,
+WebGL renderer, reveal, and shared clothesline.
+
 ## Choose the reveal
 
 Copy `.env.example` to `.env.local`. The Clark family reveal is set to `VITE_REVEAL=pink`. Restart the development server after changes.
