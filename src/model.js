@@ -20,6 +20,27 @@ export const FOLDS = [
     description: "A little scrunch. A lot of personality.",
     symbol: "✳",
   },
+  {
+    id: "sunburst",
+    name: "A sunny little burst",
+    short: "Sunburst",
+    description: "Rays from the middle, full of sparkle.",
+    symbol: "☼",
+  },
+  {
+    id: "chevron",
+    name: "A zigzag story",
+    short: "Chevron",
+    description: "Crisp diagonal folds that zig and zag.",
+    symbol: "⌁",
+  },
+  {
+    id: "pebble",
+    name: "Soft little pools",
+    short: "Pebble",
+    description: "Gentle bunches for a painterly pattern.",
+    symbol: "◌",
+  },
 ];
 export const STICKERS = ["✿", "♡", "★", "☀", "✦", "☁"];
 export function createShirt() {
@@ -86,7 +107,12 @@ export const STICKER_NAMES = {
 };
 export function addBand(shirt, point) {
   if (shirt.bands >= 3) return false;
-  const angle = shirt.fold === 1 ? Math.PI / 2 : (shirt.bands * Math.PI) / 3;
+  const angle =
+    shirt.fold === 1
+      ? Math.PI / 2
+      : shirt.fold === 4
+        ? Math.PI / 4
+        : (shirt.bands * Math.PI) / 3;
   const offset =
     point && Number.isFinite(point.x) && Number.isFinite(point.y)
       ? Math.max(

@@ -128,6 +128,24 @@ for (const fold of ["Accordion", "Scrunch"])
       page.getByRole("heading", { name: "Choose your fold." }),
     ).toBeVisible();
   });
+test("six fold options can be selected before starting a shirt", async ({
+  page,
+}) => {
+  await page.goto("/?ui=v1");
+  await expect(page.locator(".fold-option")).toHaveCount(6);
+  for (const fold of [
+    "Spiral",
+    "Accordion",
+    "Scrunch",
+    "Sunburst",
+    "Chevron",
+    "Pebble",
+  ]) {
+    const option = page.locator("[data-fold]", { hasText: fold });
+    await option.click();
+    await expect(option).toHaveAttribute("aria-pressed", "true");
+  }
+});
 test("mobile layout has no horizontal overflow and keyboard can finish dye step", async ({
   page,
 }) => {

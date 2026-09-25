@@ -468,6 +468,15 @@ h2 {
 .fold-2 {
   font-size: 38px;
 }
+.fold-3 {
+  font-size: 33px;
+}
+.fold-4 {
+  font-size: 39px;
+}
+.fold-5 {
+  font-size: 42px;
+}
 .fold-option strong {
   display: block;
   font-size: 15px;
@@ -1988,7 +1997,7 @@ body[data-step="4"] .secret-note {
     gap: 5px;
     text-align: center;
     padding: 8px 3px;
-    min-height: 80px;
+    min-height: 78px;
     border-radius: 7px;
   }
   .fold-option small,
@@ -2009,6 +2018,15 @@ body[data-step="4"] .secret-note {
   }
   .fold-2 {
     font-size: 30px;
+  }
+  .fold-3 {
+    font-size: 27px;
+  }
+  .fold-4 {
+    font-size: 31px;
+  }
+  .fold-5 {
+    font-size: 33px;
   }
   .button {
     min-height: 48px;
@@ -3010,6 +3028,42 @@ body.ui-v2:not(.gallery-open) {
   }
   .ui-v2:not(.gallery-open) .fold-options {
     margin: 9px 0;
+  }
+  .ui-v2:not(.gallery-open)[data-step="0"] .step-description,
+  .ui-v2:not(.gallery-open)[data-step="0"] .button-caption {
+    display: none;
+  }
+  .ui-v2:not(.gallery-open)[data-step="0"] .fold-options {
+    gap: 6px;
+    margin: 7px 0;
+  }
+  .ui-v2:not(.gallery-open)[data-step="0"] .fold-option {
+    min-height: 57px;
+    gap: 2px;
+    padding: 5px 2px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="0"] .fold-option strong {
+    font-size: 12px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="0"] .fold-symbol {
+    height: 24px;
+    font-size: 24px;
+    line-height: 24px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="0"] .fold-1 {
+    font-size: 29px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="0"] .fold-2 {
+    font-size: 25px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="0"] .fold-3 {
+    font-size: 23px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="0"] .fold-4 {
+    font-size: 26px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="0"] .fold-5 {
+    font-size: 28px;
   }
   .ui-v2:not(.gallery-open) .dye-settings {
     margin-top: 0;

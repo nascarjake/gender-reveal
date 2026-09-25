@@ -1,6 +1,17 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createShirt, addDrop, canAdvance, validEntry } from "../src/model.js";
+import {
+  FOLDS,
+  createShirt,
+  addDrop,
+  canAdvance,
+  validEntry,
+} from "../src/model.js";
+test("six folds offer distinct pattern choices", () => {
+  assert.equal(FOLDS.length, 6);
+  assert.equal(new Set(FOLDS.map((fold) => fold.id)).size, 6);
+  assert.equal(new Set(FOLDS.map((fold) => fold.symbol)).size, 6);
+});
 test("the reveal requires tying and dyeing; shirts start fresh", () => {
   const shirt = createShirt();
   assert.equal(canAdvance(0, shirt), true);

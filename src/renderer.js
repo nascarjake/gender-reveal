@@ -24,13 +24,19 @@ float bundle(vec2 p){
  float theta=atan(p.y,p.x),r=length(p);
  if(uFold<.5)return r-.515-.014*sin(theta*15.+r*30.);
  if(uFold<1.5)return box(p,vec2(.27,.64))-.016*sin(p.y*58.);
- return r-.46-.035*sin(theta*7.)-.035*sin(theta*11.+1.);
+ if(uFold<2.5)return r-.46-.035*sin(theta*7.)-.035*sin(theta*11.+1.);
+ if(uFold<3.5)return r-.49-.022*sin(theta*18.)-.014*sin(theta*9.+r*24.);
+ if(uFold<4.5){vec2 q=vec2((p.x+p.y)*.707,(p.y-p.x)*.707);return box(q,vec2(.42,.49))-.018*sin(q.x*31.);}
+ return r-.47-.025*sin(theta*5.+r*18.)-.018*sin(theta*13.);
 }
 vec2 foldedPoint(vec2 p){
  float r=length(p),a=atan(p.y,p.x);
  if(uFold<.5){float t=a+r*9.;return vec2(cos(t),sin(t))*r*.62;}
  if(uFold<1.5)return vec2((abs(fract((p.x+.9)*3.)*2.-1.)-.5)*.49,p.y*.89);
- return vec2(sin(p.x*5.+p.y*3.),sin(p.y*5.-p.x*2.))*.36+vec2(fbm(p*9.))*.1;
+ if(uFold<2.5)return vec2(sin(p.x*5.+p.y*3.),sin(p.y*5.-p.x*2.))*.36+vec2(fbm(p*9.))*.1;
+ if(uFold<3.5){float ray=sin(a*8.+r*13.);return vec2(cos(a*8.),sin(a*8.))*(.16+r*.28+ray*.06);}
+ if(uFold<4.5){float zig=abs(fract((p.x+p.y+.9)*2.7)*2.-1.)-.5;return vec2(zig*.72,(p.y-p.x)*.42);}
+ return vec2(fbm(p*5.+3.),fbm(p*5.-7.))*.68-vec2(.34);
 }
 void main(){
  vec2 p=(vUv-.5)*2.08; p.x*=uResolution.x/uResolution.y;
@@ -38,7 +44,7 @@ void main(){
  float sd=mix(shirt(p),bundle(p),uFolded);
  float mask=1.-smoothstep(-.003,.006,sd);
  float shadow=(1.-smoothstep(-.01,.065,mix(shirt(p-vec2(.018,-.034)),bundle(p-vec2(.018,-.034)),uFolded)))*.14;
- vec2 dyeP=mix(foldedPoint(p),p,uFolded);
+ vec2 dyeP=mix(p,foldedPoint(p),1.-uFolded);
  dyeP+=(vec2(fbm(p*32.),fbm(p*37.+10.))-.5)*.038;
  float density=0.,tone=0.,accent=0.;
  for(int i=0;i<64;i++){if(i>=uCount)break;vec4 drop=uDrops[i];float d=length(dyeP-drop.xy);float ink=exp(-d*d/(drop.w*drop.w*.75));float palette=floor(drop.z/3.);float strength=mod(drop.z,3.);density+=ink;tone+=ink*(strength*.5);accent+=ink*palette;}
@@ -47,7 +53,10 @@ void main(){
  float a=atan(p.y,p.x),r=length(p);
  float ridges=sin(r*83.+a*5.+fbm(p*22.)*10.);
  if(uFold>.5&&uFold<1.5)ridges=sin(p.x*91.+fbm(p*22.)*10.);
- if(uFold>1.5)ridges=sin(fbm(p*12.)*45.);
+ if(uFold>1.5&&uFold<2.5)ridges=sin(fbm(p*12.)*45.);
+ if(uFold>2.5&&uFold<3.5)ridges=sin(a*14.+r*46.+fbm(p*15.)*8.);
+ if(uFold>3.5&&uFold<4.5)ridges=sin((p.x+p.y)*86.+fbm(p*18.)*9.);
+ if(uFold>4.5)ridges=sin(fbm(p*7.)*58.+r*16.);
  float resist=smoothstep(-.98,-.48,ridges)*.8+.2;
  float tiedResist=1.;
  for(int i=0;i<3;i++){if(float(i)>=uBands)break;vec2 band=uBandLines[i];float d=abs(dot(dyeP,vec2(cos(band.x),sin(band.x)))-band.y);tiedResist*=mix(.32,1.,smoothstep(.008,.025,d));}
@@ -164,6 +173,11 @@ export class ShirtRenderer {
   }
   contains({ x, y }, fold) {
     if (fold === 1) return Math.abs(x) < 0.29 && Math.abs(y) < 0.66;
+    if (fold === 4) {
+      const diagonalX = (x + y) * 0.707,
+        diagonalY = (y - x) * 0.707;
+      return Math.abs(diagonalX) < 0.44 && Math.abs(diagonalY) < 0.52;
+    }
     return Math.hypot(x, y) < (fold === 0 ? 0.54 : 0.52);
   }
 }
