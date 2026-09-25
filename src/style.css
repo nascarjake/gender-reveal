@@ -2377,8 +2377,8 @@ body[data-step="4"] .secret-note {
 body.ui-v2:not(.gallery-open) {
   min-height: 100dvh;
   overflow: hidden;
-  background: #dcd5ff;
-  color: #33294b;
+  background: #e4ecd4;
+  color: #2f3b2e;
 }
 .ui-v2:not(.gallery-open) #app,
 .ui-v2:not(.gallery-open) main,
@@ -2401,26 +2401,26 @@ body.ui-v2:not(.gallery-open) {
   margin: 0;
   padding: 0 26px;
   border: 0;
-  color: #32284b;
-  background: linear-gradient(180deg, #ffffffed, #ffffffa8);
-  box-shadow: 0 8px 24px #51457b17;
+  color: #2e3a2c;
+  background: linear-gradient(180deg, #fffdf4f2, #fffdf4bd);
+  box-shadow: 0 8px 24px #4657331a;
   backdrop-filter: blur(14px);
 }
 .ui-v2:not(.gallery-open) .brand {
-  color: #5c3ac7;
+  color: #356342;
   font-size: 24px;
   text-shadow: 0 1px white;
 }
 .ui-v2:not(.gallery-open) .brand-flower {
-  color: #f45fb6;
+  color: #e0a51e;
 }
 .ui-v2:not(.gallery-open) .brand-dot {
-  color: #f45fb6;
+  color: #e0a51e;
 }
 .ui-v2:not(.gallery-open) .nav-link.active:after {
   height: 5px;
   border-radius: 9px 9px 0 0;
-  background: linear-gradient(90deg, #6e4bdf, #f45fb6);
+  background: linear-gradient(90deg, #47865c, #e5b62f);
 }
 .ui-v2:not(.gallery-open) .intro,
 .ui-v2:not(.gallery-open) .under-workspace,
@@ -2445,16 +2445,16 @@ body.ui-v2:not(.gallery-open) {
   height: 100%;
   border: 2px solid #ffffffb8;
   border-radius: 30px;
-  background-color: #b9b0fb;
+  background-color: #d8e7b8;
   background-image:
     radial-gradient(circle at 13% 17%, #ffffffd9 0 3px, transparent 4px),
-    radial-gradient(circle at 86% 22%, #fff4a9 0 5px, transparent 6px),
-    radial-gradient(circle at 76% 80%, #f76cbd80 0 4px, transparent 5px),
-    linear-gradient(145deg, #c9b8ff 0%, #9ee8f2 52%, #fff0a9 100%);
+    radial-gradient(circle at 86% 22%, #f5b936 0 5px, transparent 6px),
+    radial-gradient(circle at 76% 80%, #5ca36f8f 0 4px, transparent 5px),
+    linear-gradient(145deg, #ffe59a 0%, #bce6c5 52%, #f7c985 100%);
   background-size: 58px 58px, 86px 86px, 72px 72px, auto;
   box-shadow:
     inset 0 0 90px #ffffff48,
-    0 18px 45px #4a39713d;
+    0 18px 45px #40543135;
 }
 .ui-v2:not(.gallery-open) .workbench.revealed.pink {
   background-color: #f7b2d4;
@@ -2468,7 +2468,7 @@ body.ui-v2:not(.gallery-open) {
   height: 55px;
   min-height: 55px;
   margin: 0 24px;
-  color: #3f3260;
+  color: #334b35;
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 1px;
@@ -2476,14 +2476,14 @@ body.ui-v2:not(.gallery-open) {
 .ui-v2:not(.gallery-open) .status-dot {
   width: 9px;
   height: 9px;
-  background: #f45fb6;
+  background: #e4a91f;
   box-shadow: 0 0 0 5px #ffffff75;
 }
 .ui-v2:not(.gallery-open) .bench-top #edition {
   border: 1px solid #ffffffd9;
   border-radius: 999px;
   padding: 7px 10px;
-  color: #4e3d76;
+  color: #3d5b41;
   background: #ffffff8f;
   font-size: 12px;
 }
@@ -2492,14 +2492,14 @@ body.ui-v2:not(.gallery-open) {
 }
 .ui-v2:not(.gallery-open) .side-note {
   left: 22px;
-  color: #4e4072;
+  color: #405f43;
   font-size: 16px;
   font-weight: 600;
 }
 .ui-v2:not(.gallery-open) .bench-bottom {
   min-height: 62px;
   margin: 0 24px;
-  color: #41355f;
+  color: #344b36;
   font-size: 16px;
 }
 .ui-v2:not(.gallery-open) .bench-bottom .text-button {
@@ -2507,7 +2507,7 @@ body.ui-v2:not(.gallery-open) {
   padding: 0 14px;
   border: 1px solid #ffffffba;
   border-radius: 999px;
-  color: #47376e;
+  color: #35553b;
   background: #ffffff75;
   text-decoration: none;
 }
@@ -2519,37 +2519,37 @@ body.ui-v2:not(.gallery-open) {
   border: 2px solid #ffffff;
   border-radius: 30px;
   background: #fffdf9ed;
-  box-shadow: 0 18px 45px #4a39713d;
+  box-shadow: 0 18px 45px #40543135;
   backdrop-filter: blur(18px);
 }
 .ui-v2:not(.gallery-open) .quest-status {
-  border-color: #d7cff8;
+  border-color: #d7dfb8;
   border-radius: 16px;
-  background: #f0ecff;
+  background: #f2f4d8;
 }
 .ui-v2:not(.gallery-open) .quest-status-copy {
-  color: #6f58b9;
+  color: #54725a;
 }
 .ui-v2:not(.gallery-open) .quest-meter {
-  background: #d9d1f5;
+  background: #dce3bd;
 }
 .ui-v2:not(.gallery-open) .quest-meter span {
   border: 0;
-  background: linear-gradient(90deg, #7656e8, #ef69bc, #f3d74e);
+  background: linear-gradient(90deg, #4f9565, #e8ba2d, #ef8e3b);
   box-shadow: none;
 }
 .ui-v2:not(.gallery-open) .steps {
   flex: 0 0 auto;
   margin-bottom: 18px;
-  border-color: #ded7f3;
+  border-color: #dfe3ca;
 }
 .ui-v2:not(.gallery-open) .steps li span {
-  border: 2px solid #d8cff1;
+  border: 2px solid #d6dec1;
   background: white;
 }
 .ui-v2:not(.gallery-open) .steps li.active span {
-  border-color: #6244cf;
-  background: #6244cf;
+  border-color: #3f7951;
+  background: #3f7951;
 }
 .ui-v2:not(.gallery-open) .steps li.done span {
   border-color: #f1cf4e;
@@ -2558,7 +2558,7 @@ body.ui-v2:not(.gallery-open) {
 .ui-v2:not(.gallery-open) .steps li.active:after {
   height: 4px;
   border-radius: 99px;
-  background: #6244cf;
+  background: #3f7951;
 }
 .ui-v2:not(.gallery-open) #step-content {
   min-height: 0;
@@ -2567,51 +2567,51 @@ body.ui-v2:not(.gallery-open) {
   scrollbar-width: thin;
 }
 .ui-v2:not(.gallery-open) #step-content h2 {
-  color: #33294b;
+  color: #2f3b2e;
 }
 .ui-v2:not(.gallery-open) .step-kicker {
-  color: #7656bf;
+  color: #4f7958;
 }
 .ui-v2:not(.gallery-open) .step-description {
-  color: #6d6580;
+  color: #697267;
 }
 .ui-v2:not(.gallery-open) .fold-option,
 .ui-v2:not(.gallery-open) .dye-choice,
 .ui-v2:not(.gallery-open) .setting-choice,
 .ui-v2:not(.gallery-open) .button.secondary {
-  border-color: #dcd3f3;
+  border-color: #d9dfc8;
   background: #fff;
 }
 .ui-v2:not(.gallery-open) .fold-option.selected,
 .ui-v2:not(.gallery-open) .dye-choice.selected,
 .ui-v2:not(.gallery-open) .setting-choice.selected {
-  border-color: #7b60db;
-  background: #eee9ff;
-  box-shadow: inset 0 0 0 1px #b7a9ec;
+  border-color: #5f926b;
+  background: #edf4df;
+  box-shadow: inset 0 0 0 1px #acc8a9;
 }
 .ui-v2:not(.gallery-open) .button {
   border-radius: 999px;
   font-weight: 800;
 }
 .ui-v2:not(.gallery-open) .button.primary {
-  border-color: #5131bc;
+  border-color: #316743;
   color: white;
-  background: linear-gradient(180deg, #8568ee, #6543d6);
-  box-shadow: 0 5px 0 #4d2fb5;
+  background: linear-gradient(180deg, #5da773, #3f8055);
+  box-shadow: 0 5px 0 #2d603f;
 }
 .ui-v2:not(.gallery-open) .button.primary:hover:not(:disabled) {
-  background: linear-gradient(180deg, #9378f2, #714ee1);
-  box-shadow: 0 6px 0 #4d2fb5;
+  background: linear-gradient(180deg, #69b27e, #478c5d);
+  box-shadow: 0 6px 0 #2d603f;
 }
 .ui-v2:not(.gallery-open) .final-level-card,
 .ui-v2:not(.gallery-open) .sticker-tools {
-  border-color: #d9cff4;
-  background: #f1edff;
+  border-color: #d5dfbc;
+  background: #f2f4dc;
 }
 .ui-v2:not(.gallery-open) .mystery-token {
   color: white;
-  background: linear-gradient(145deg, #f15cb1, #7758e5);
-  box-shadow: 0 4px 0 #5b3bc6;
+  background: linear-gradient(145deg, #edbd32, #4c9362);
+  box-shadow: 0 4px 0 #356d48;
 }
 
 @media (max-width: 900px) {
@@ -2638,11 +2638,11 @@ body.ui-v2:not(.gallery-open) {
     font-size: 27px;
   }
   .ui-v2:not(.gallery-open) .nav-link {
-    color: #685d7e;
+    color: #61705f;
     font-size: 13px;
   }
   .ui-v2:not(.gallery-open) .nav-link.active {
-    color: #33294b;
+    color: #2f3b2e;
   }
   .ui-v2:not(.gallery-open) main {
     width: 100%;
@@ -2725,7 +2725,7 @@ body.ui-v2:not(.gallery-open) {
     padding: 0 6px 0 12px;
     border: 1px solid #ffffffb5;
     border-radius: 15px;
-    color: #433661;
+    color: #344b36;
     background: #ffffffa3;
     backdrop-filter: blur(9px);
     font-size: 13px;
@@ -2759,7 +2759,7 @@ body.ui-v2:not(.gallery-open) {
     border-top: 2px solid white;
     border-radius: 27px 27px 0 0;
     background: #fffdf9f5;
-    box-shadow: 0 -15px 35px #51447b2e;
+    box-shadow: 0 -15px 35px #4054312e;
   }
   .ui-v2:not(.gallery-open) .controls:before {
     content: "";
@@ -2767,7 +2767,7 @@ body.ui-v2:not(.gallery-open) {
     height: 5px;
     margin: -3px auto 7px;
     border-radius: 99px;
-    background: #c8bde9;
+    background: #b9c9a6;
     flex: 0 0 5px;
   }
   .ui-v2:not(.gallery-open) .quest-status {
