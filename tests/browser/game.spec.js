@@ -377,6 +377,7 @@ test("v2 uses a full-screen mobile game stage while preserving the game flow", a
   const introBox = await intro.locator(".game-intro-card").boundingBox();
   expect(introBox.y).toBeGreaterThanOrEqual(0);
   expect(introBox.y + introBox.height).toBeLessThanOrEqual(844);
+  expect(Math.abs(introBox.y + introBox.height / 2 - 844 / 2)).toBeLessThan(2);
   expect(
     await page.evaluate(() => document.documentElement.scrollHeight),
   ).toBeLessThanOrEqual(844);
@@ -419,6 +420,17 @@ test("v2 intro fits a short phone without scrolling", async ({ page }) => {
   expect(card.x + card.width).toBeLessThanOrEqual(375);
   expect(card.y).toBeGreaterThanOrEqual(0);
   expect(card.y + card.height).toBeLessThanOrEqual(667);
+  expect(Math.abs(card.y + card.height / 2 - 667 / 2)).toBeLessThan(2);
+  const headlineType = await intro.locator("h1").evaluate((heading) => {
+    const style = getComputedStyle(heading);
+    return {
+      family: style.fontFamily,
+      size: parseFloat(style.fontSize),
+      lineHeight: parseFloat(style.lineHeight),
+    };
+  });
+  expect(headlineType.family).toContain("DM Serif Display");
+  expect(headlineType.lineHeight / headlineType.size).toBeGreaterThan(1.08);
   expect(
     await page.evaluate(() => document.documentElement.scrollHeight),
   ).toBeLessThanOrEqual(667);

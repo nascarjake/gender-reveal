@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Manrope:wght@400;500;600;650;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;650;700;800&display=swap");
 :root {
   font-family: "DM Sans", sans-serif;
   color: #363a2e;
@@ -2458,18 +2458,27 @@ body[data-step="4"] .secret-note {
   letter-spacing: 2.2px;
 }
 .game-intro h1 {
-  max-width: 510px;
+  max-width: 520px;
   margin: 0 auto;
   color: #2f3b2e;
-  font-size: clamp(32px, 5vw, 52px);
-  line-height: 0.98;
-  letter-spacing: -2.4px;
+  font-family: "DM Serif Display", Georgia, serif;
+  font-size: clamp(34px, 4.6vw, 50px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.7px;
+}
+.game-intro h1 em {
+  color: #4d7756;
+  font-family: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
 }
 .game-intro-copy {
   max-width: 460px;
-  margin: 22px auto 0;
+  margin: 24px auto 0;
   color: #4d604e;
-  font: italic clamp(20px, 3vw, 27px) / 1.25 Georgia, serif;
+  font: 600 clamp(19px, 2.3vw, 23px) / 1.45 "DM Sans", sans-serif;
+  letter-spacing: -0.2px;
 }
 .game-intro-levels {
   display: flex;
@@ -2498,6 +2507,11 @@ body[data-step="4"] .secret-note {
   margin: 16px 0 0;
   color: #788174;
   font-size: 13px;
+}
+.game-intro-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 .game-intro-sparkles span {
   position: absolute;
@@ -3022,12 +3036,14 @@ body.ui-v2:not(.gallery-open) {
     height: 34px;
   }
   .game-intro h1 {
-    font-size: clamp(30px, 9.5vw, 39px);
-    letter-spacing: -1.7px;
+    font-size: clamp(31px, 9.1vw, 38px);
+    line-height: 1.1;
+    letter-spacing: -0.4px;
   }
   .game-intro-copy {
-    margin-top: 17px;
-    font-size: 20px;
+    margin-top: 19px;
+    font-size: 19px;
+    line-height: 1.42;
   }
   .game-intro-levels {
     gap: 7px;
@@ -3055,11 +3071,13 @@ body.ui-v2:not(.gallery-open) {
     margin-bottom: 9px;
   }
   .game-intro h1 {
-    font-size: clamp(28px, 7vw, 36px);
+    font-size: clamp(28px, 7vw, 35px);
+    line-height: 1.09;
   }
   .game-intro-copy {
-    margin-top: 12px;
-    font-size: 18px;
+    margin-top: 14px;
+    font-size: 17px;
+    line-height: 1.38;
   }
   .game-intro-levels {
     margin: 14px 0 12px;
