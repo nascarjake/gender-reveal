@@ -39,3 +39,29 @@ test("gallery accepts bounded PNG data and rejects unsafe or oversized content",
     false,
   );
 });
+
+test("band placements retain drop location and are bounded to three", async () => {
+  const { addBand } = await import("../src/model.js");
+  const shirt = createShirt();
+  addBand(shirt, { x: 0.2, y: 0.1 });
+  assert.equal(shirt.bandPlacements[0].offset, 0.2);
+  addBand(shirt);
+  addBand(shirt);
+  assert.equal(addBand(shirt), false);
+  assert.equal(shirt.bands, 3);
+});
+test("stickers remain on the fabric through scaling and dragging", async () => {
+  const { addSticker, constrainSticker } = await import("../src/model.js");
+  const shirt = createShirt();
+  const sticker = addSticker(shirt, "♡");
+  sticker.x = 20;
+  sticker.y = -20;
+  sticker.size = 10;
+  constrainSticker(sticker);
+  assert.equal(sticker.size, 0.32);
+  assert.ok(sticker.x + sticker.size * 0.55 <= 0.41);
+  assert.ok(sticker.y - sticker.size * 0.55 >= -0.64);
+  for (let i = 0; i < 10; i++) addSticker(shirt, "★");
+  assert.equal(shirt.stickers.length, 8);
+  assert.equal(addSticker(shirt, "?"), null);
+});

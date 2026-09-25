@@ -1,10 +1,21 @@
 import "./style.css";
-import { FOLDS, STICKERS, createShirt, addDrop, canAdvance } from "./model.js";
+import {
+  FOLDS,
+  STICKERS,
+  STICKER_NAMES,
+  createShirt,
+  addDrop,
+  canAdvance,
+  addBand,
+  addSticker,
+  constrainSticker,
+} from "./model.js";
 import { ShirtRenderer } from "./renderer.js";
 import { getEntries, saveEntry, sharedGallery } from "./gallery.js";
-const configured = import.meta.env.VITE_REVEAL;
-const demo = !["pink", "blue"].includes(configured);
-const color = demo ? "blue" : configured;
+import { demo, color } from "./config.js";
+import { StickerEditor, paintStickers } from "./sticker-editor.js";
+let selectedSticker = null,
+  finishTab = "decorate";
 let shirt = createShirt(),
   step = 0,
   shade = 1,
@@ -12,6 +23,7 @@ let shirt = createShirt(),
   reveal = 0,
   animating = false,
   saved = false,
+  saving = false,
   hasRevealed = false,
   view = "studio";
 let renderer,
@@ -32,18 +44,18 @@ function icon(name) {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.shirt}</svg>`;
 }
 $("#app").innerHTML = `
-<header class="header"><a class="brand" href="#" aria-label="A little secret home"><span class="brand-flower">✳</span><span>a little secret<span class="brand-dot">.</span></span></a><nav aria-label="Main navigation"><button class="nav-link active" id="studio-nav">${icon("shirt")} The dye studio</button><button class="nav-link" id="gallery-nav">${icon("line")} The clothesline <span class="count" id="gallery-count">0</span></button></nav><span class="header-note">made with love, for our little love ${icon("heart")}</span></header>
+<header class="header"><a class="brand" href="#" aria-label="A little secret home"><span class="brand-flower">✳</span><span>a little secret<span class="brand-dot">.</span></span></a><nav aria-label="Main navigation"><button class="nav-link active" id="studio-nav" aria-label="The dye studio">${icon("shirt")} <span class="nav-desktop">The dye studio</span><span class="nav-mobile">Studio</span></button><button class="nav-link" id="gallery-nav" aria-label="The clothesline">${icon("line")} <span class="nav-desktop">The clothesline</span><span class="nav-mobile">Clothesline</span> <span class="count" id="gallery-count">0</span></button></nav><span class="header-note">THE CLARK FAMILY · EST. 2021 ${icon("heart")}</span></header>
 <main>
 <section id="studio-view">
-<div class="intro"><div><p class="eyebrow">A LITTLE DYE. A BIG SURPRISE.</p><h1>Something little. <br>Something <em>lovely.</em></h1><p class="intro-copy">Make a tie-dye tee. Unfold a little secret. <br>A one-of-a-kind hello to our newest little love.</p></div><div class="intro-stamp"><span>OH, BABY!</span><strong>Made<br>with love</strong><span>ONE TINY TEE AT A TIME</span></div></div>
+<div class="intro"><div><p class="eyebrow">THE CLARK FAMILY · EST. 2021</p><h1>Something little. <br>Something <em>lovely.</em></h1><p class="intro-copy">Make a tie-dye tee. Unfold a little secret. <br>A little hello to the newest member of the Clark family.</p></div><div class="intro-stamp"><span>OH, BABY!</span><strong>Made<br>with love</strong><span>ONE TINY TEE AT A TIME</span></div></div>
 <div class="workspace">
-<section class="workbench" aria-label="Interactive tie-dye workspace"><div class="bench-top"><span class="bench-label"><span class="status-dot"></span> YOUR LITTLE MASTERPIECE</span><span id="edition">NO. 001</span></div><div class="canvas-wrap"><canvas id="shirt-canvas" width="1100" height="1000" tabindex="0" role="img" aria-label="Your shirt. Choose a fold to get started."></canvas><div id="shirt-sticker" aria-hidden="true"></div><span class="side-note">a little messy is a little magic</span><div class="reveal-badge" id="reveal-badge" hidden><span id="reveal-kicker"></span><strong id="reveal-title"></strong></div><div class="canvas-error" id="canvas-error" hidden><strong>Let’s get the studio ready.</strong><p>This game needs WebGL. Try a browser with hardware acceleration enabled.</p></div></div><div class="bench-bottom"><span id="bench-hint">Your blank canvas. So many possibilities.</span><button class="text-button" id="reset-button">${icon("reset")} Start over</button></div></section>
+<section class="workbench" aria-label="Interactive tie-dye workspace"><div class="bench-top"><span class="bench-label"><span class="status-dot"></span> YOUR LITTLE MASTERPIECE</span><span id="edition">NO. 001</span></div><div class="canvas-wrap"><canvas id="shirt-canvas" width="1100" height="1000" tabindex="0" role="img" aria-label="Your shirt. Choose a fold to get started."></canvas><div id="sticker-layer" aria-label="Stickers on your shirt"></div><span class="side-note">a little messy is a little magic</span><div class="reveal-badge" id="reveal-badge" hidden><span id="reveal-kicker"></span><strong id="reveal-title"></strong></div><div class="canvas-error" id="canvas-error" hidden><strong>Let’s get the studio ready.</strong><p>This game needs WebGL. Try a browser with hardware acceleration enabled.</p></div></div><div class="bench-bottom"><span id="bench-hint">Your blank canvas. So many possibilities.</span><button class="text-button" id="reset-button">${icon("reset")} Start over</button></div></section>
 <aside class="controls"><ol class="steps" aria-label="Your progress"><li class="active"><span>1</span>Fold</li><li><span>2</span>Tie</li><li><span>3</span>Dye</li><li><span>4</span>Reveal</li></ol><div id="step-content"></div><div class="secret-note">${icon("heart")}<p>A little secret, kept under wraps.<br><span>Everything stays gray until the big reveal.</span></p></div></aside>
 </div>
 <div class="under-workspace"><span>NO TWO SHIRTS ALIKE. JUST LIKE NO LOVE QUITE LIKE THIS.</span><span>Fold it. Dye it. Feel all the feelings. <span class="tiny-flower">✳</span></span></div>
 </section>
 <section id="gallery-view" hidden><div class="gallery-heading"><p class="eyebrow">A WHOLE LOT OF LOVE, HUNG UP TO DRY.</p><h1>Our little <em>clothesline.</em></h1><p id="gallery-description"></p><button class="button secondary" id="back-to-studio">${icon("shirt")} Back to my shirt</button></div><div id="gallery-items" class="clothesline"></div><button class="text-button gallery-refresh" id="refresh-gallery">${icon("reset")} Refresh the clothesline</button></section>
-</main><footer><span>a little secret<span class="brand-dot">.</span></span><p>Little shirt. Big love.</p><span id="demo-label">${demo ? "DEMO STUDIO · SAMPLE REVEAL" : "MADE FOR OUR FAVORITE PEOPLE"}</span></footer>
+</main><footer><span>a little secret<span class="brand-dot">.</span></span><p>The Clark family · Est. 2021</p><span id="demo-label">${demo ? "DEMO STUDIO · SAMPLE REVEAL" : "MADE FOR OUR FAVORITE PEOPLE"}</span></footer>
 <div id="toast" role="status" aria-live="polite"></div>
 <dialog id="reset-dialog"><form method="dialog"><span class="dialog-flower">✳</span><h2>A fresh little start?</h2><p>Your current shirt will be cleared. Download it or hang it up first if you want to keep it.</p><div class="dialog-actions"><button value="cancel" class="button secondary">Keep this shirt</button><button value="reset" class="button primary">Start fresh ${icon("arrow")}</button></div></form></dialog>
 <dialog id="spoiler-dialog"><form method="dialog"><span class="dialog-flower">♡</span><h2>There’s a secret on the line.</h2><p>The finished shirts give away the surprise. Make your own first, or peek if you’re ready!</p><div class="dialog-actions"><button value="cancel" class="button primary">Make my shirt</button><button value="peek" class="button secondary">Take a peek</button></div></form></dialog>`;
@@ -53,6 +65,21 @@ try {
   console.error(error);
   $("#canvas-error").hidden = false;
 }
+const stickerEditor = new StickerEditor(
+  $("#sticker-layer"),
+  $("#shirt-canvas"),
+  () => ({
+    shirt,
+    selected: selectedSticker,
+    enabled: step === 4 && !saved && !saving,
+  }),
+  (id) => {
+    selectedSticker = id;
+    finishTab = "decorate";
+    renderStep();
+  },
+  () => updateStickerSize(),
+);
 function draw() {
   if (renderer) renderer.draw(shirt, { folded, reveal, color });
 }
@@ -63,6 +90,7 @@ function resize() {
   canvas.width = Math.round(r.width * dpr);
   canvas.height = Math.round(r.height * dpr);
   draw();
+  stickerEditor?.sync();
 }
 new ResizeObserver(() => {
   if (view === "studio") resize();
@@ -107,11 +135,12 @@ function setCanvasLabel(text) {
   $("#shirt-canvas").setAttribute("aria-label", text);
 }
 function renderStep() {
+  document.body.dataset.step = String(step);
   updateSteps();
-  $("#reset-button").disabled = animating;
+  $("#reset-button").disabled = animating || saving;
   const content = $("#step-content");
   if (step === 0) {
-    content.innerHTML = `<p class="step-kicker">STEP 01 · MAKE IT YOURS</p><h2>Let’s roll with it.</h2><p class="step-description">Every fold has a little personality.<br>Which one feels like you?</p><div class="fold-options">${FOLDS.map((f, i) => `<button class="fold-option ${shirt.fold === i ? "selected" : ""}" data-fold="${i}" aria-pressed="${shirt.fold === i}"><span class="fold-symbol fold-${i}" aria-hidden="true">${f.symbol}</span><span><strong>${f.short}</strong><small>${f.description}</small></span><span class="radio-dot"></span></button>`).join("")}</div><button id="next-button" class="button primary">Fold my shirt ${icon("arrow")}</button><p class="button-caption">No wrong choices. Only happy accidents.</p>`;
+    content.innerHTML = `<p class="step-kicker">STEP 01 · MAKE IT YOURS</p><h2>Let’s roll with it.</h2><p class="step-description">Every fold has a little personality. <br>Which one feels like you?</p><div class="fold-options">${FOLDS.map((f, i) => `<button class="fold-option ${shirt.fold === i ? "selected" : ""}" data-fold="${i}" aria-pressed="${shirt.fold === i}"><span class="fold-symbol fold-${i}" aria-hidden="true">${f.symbol}</span><span><strong>${f.short}</strong><small>${f.description}</small></span><span class="radio-dot"></span></button>`).join("")}</div><button id="next-button" class="button primary">Fold my shirt ${icon("arrow")}</button><p class="button-caption">No wrong choices. Only happy accidents.</p>`;
     content.querySelectorAll("[data-fold]").forEach((button) =>
       button.addEventListener("click", () => {
         shirt.fold = Number(button.dataset.fold);
@@ -132,8 +161,15 @@ function renderStep() {
       );
     };
   } else if (step === 1) {
-    content.innerHTML = `<p class="step-kicker">STEP 02 · HOLD IT TOGETHER</p><h2>All tied up.</h2><p class="step-description">Wrap three rubber bands around your bundle. Those little lines make the magic.</p><div class="band-visual" aria-label="${shirt.bands} of 3 rubber bands added">${[0, 1, 2].map((i) => `<span class="rubber-band ${i < shirt.bands ? "used" : ""}"></span>`).join("")}</div><button class="button secondary" id="add-band" ${shirt.bands >= 3 || animating ? "disabled" : ""}>${shirt.bands >= 3 ? "All snug and ready!" : `Add a rubber band · ${shirt.bands}/3`}</button><button class="button primary" id="next-button" ${canAdvance(step, shirt) ? "" : "disabled"}>Bring on the dye ${icon("arrow")}</button><p class="button-caption">You can also tap your shirt to tie it.</p>`;
-    $("#add-band").onclick = tieBand;
+    content.innerHTML = `<p class="step-kicker">STEP 02 · HOLD IT TOGETHER</p><h2>All tied up.</h2><p class="step-description">Drag a band onto your shirt, or tap “Add a rubber band.” Three makes it snug!</p><div class="band-visual" aria-label="${shirt.bands} of 3 rubber bands added">${[0, 1, 2].map((i) => `<button class="band-pick ${i < shirt.bands ? "used" : ""}" aria-label="Rubber band ${i + 1}. Drag to the shirt or tap to add." ${i < shirt.bands || animating ? "disabled" : ""}><span class="rubber-band"></span></button>`).join("")}<span class="band-count" aria-live="polite">${shirt.bands} of 3</span></div><div class="easy-actions"><button class="button secondary" id="add-band" ${shirt.bands >= 3 || animating ? "disabled" : ""}>${shirt.bands >= 3 ? "All snug and ready!" : `Add a rubber band · ${shirt.bands}/3`}</button><button class="button secondary" id="undo-band" ${!shirt.bands ? "disabled" : ""} aria-label="Undo last rubber band">Undo</button></div><button class="button primary" id="next-button" ${canAdvance(step, shirt) ? "" : "disabled"}>Bring on the dye ${icon("arrow")}</button>`;
+    $("#add-band").onclick = () => tieBand();
+    $("#undo-band").onclick = () => {
+      shirt.bandPlacements.pop();
+      shirt.bands = shirt.bandPlacements.length;
+      renderStep();
+      draw();
+    };
+    content.querySelectorAll(".band-pick").forEach(wireBandDrag);
     $("#next-button").onclick = () => {
       if (!canAdvance(step, shirt) || animating) return;
       step = 2;
@@ -145,7 +181,7 @@ function renderStep() {
       );
     };
   } else if (step === 2) {
-    content.innerHTML = `<p class="step-kicker">STEP 03 · A HAPPY LITTLE MESS</p><h2>A splash of mystery.</h2><p class="step-description">Pick a secret shade, then squirt it onto your shirt. Where it lands changes everything.</p><div class="dye-bottles" role="group" aria-label="Secret dye shade">${["Soft", "Medium", "Deep"].map((label, i) => `<button class="dye-choice ${shade === i ? "selected" : ""}" data-shade="${i}" aria-pressed="${shade === i}" aria-label="${label} dye"><span class="bottle bottle-${i}"><span class="bottle-mark">${["Ⅰ", "Ⅱ", "Ⅲ"][i]}</span></span><strong>${label}</strong></button>`).join("")}</div><div class="dye-progress"><span id="drop-count">${shirt.drops.length} little splashes</span><button class="text-button" id="undo-dye" ${!shirt.drops.length ? "disabled" : ""}>Undo</button></div><button class="button primary" id="next-button" ${canAdvance(step, shirt) ? "" : "disabled"}>Ready for the surprise ${icon("arrow")}</button><p class="button-caption" id="dye-caption">${shirt.drops.length < 3 ? "Add at least 3 splashes. Make it wonderfully you." : "A little white space makes a lovely pattern, too."}</p><p class="keyboard-help">Keyboard: arrow keys to aim, Space to squirt.</p>`;
+    content.innerHTML = `<p class="step-kicker">STEP 03 · A HAPPY LITTLE MESS</p><h2>A splash of mystery.</h2><p class="step-description">Pick a secret shade, then squirt it onto your shirt. Where it lands changes everything.</p><div class="dye-bottles" role="group" aria-label="Secret dye shade">${["Soft", "Medium", "Deep"].map((label, i) => `<button class="dye-choice ${shade === i ? "selected" : ""}" data-shade="${i}" aria-pressed="${shade === i}" aria-label="${label} dye"><span class="bottle bottle-${i}"><span class="bottle-mark">${["Ⅰ", "Ⅱ", "Ⅲ"][i]}</span></span><strong>${label}</strong></button>`).join("")}</div><button class="button secondary easy-dye" id="help-dye">Add a few splashes for me ✧</button><div class="dye-progress"><span id="drop-count">${shirt.drops.length} little splashes</span><button class="text-button" id="undo-dye" ${!shirt.drops.length ? "disabled" : ""}>Undo</button></div><button class="button primary" id="next-button" ${canAdvance(step, shirt) ? "" : "disabled"}>Ready for the surprise ${icon("arrow")}</button><p class="button-caption" id="dye-caption">${shirt.drops.length < 3 ? "Add at least 3 splashes. Make it wonderfully you." : "A little white space makes a lovely pattern, too."}</p><p class="keyboard-help">Keyboard: arrow keys to aim, Space to squirt.</p>`;
     content.querySelectorAll("[data-shade]").forEach(
       (b) =>
         (b.onclick = () => {
@@ -153,6 +189,17 @@ function renderStep() {
           renderStep();
         }),
     );
+    $("#help-dye").onclick = () => {
+      for (let i = 0; i < 5; i++) {
+        const a = Math.random() * Math.PI * 2,
+          r = 0.1 + Math.random() * 0.3;
+        dyeAt(
+          shirt.fold === 1
+            ? { x: (Math.random() - 0.5) * 0.4, y: (Math.random() - 0.5) * 1.1 }
+            : { x: Math.cos(a) * r, y: Math.sin(a) * r },
+        );
+      }
+    };
     $("#undo-dye").onclick = () => {
       shirt.drops.pop();
       renderStep();
@@ -168,38 +215,173 @@ function renderStep() {
     content.innerHTML = `<p class="step-kicker">STEP 04 · THE BIG LITTLE MOMENT</p><h2>Ready, little love?</h2><p class="step-description">Your masterpiece has been keeping a secret. It’s time to let it unfold.</p><div class="reveal-heart">♡<span>made with<br>so much love</span></div>${demo ? '<p class="demo-note">You’re in the demo studio. This is a sample reveal.</p>' : ""}<button class="button primary reveal-button" id="reveal-button">Unfold the surprise ${icon("heart")}</button><p class="button-caption">Gather your favorite people. Take a little breath.</p>`;
     $("#reveal-button").onclick = performReveal;
   } else {
-    content.innerHTML = `<p class="step-kicker">${demo ? "A LITTLE DEMO. A LOT OF LOVE." : "OUR NEWEST LITTLE LOVE"}</p><h2>${color === "pink" ? "It’s a girl!" : "It’s a boy!"}</h2><p class="step-description">A little ${color}, a whole lot of love.<br>This one’s yours. Give it a finishing touch.</p><label class="input-label" for="guest-name">Made by <span>optional</span></label><input id="guest-name" maxlength="32" placeholder="Your name" autocomplete="given-name"/><label class="input-label" for="shirt-title">Give your tee a name <span>optional</span></label><input id="shirt-title" maxlength="48" placeholder="e.g. A little ray of sunshine"/><div class="sticker-row" role="group" aria-label="Shirt sticker"><span>A little extra</span><button class="sticker-choice ${!shirt.sticker ? "selected" : ""}" data-sticker="" aria-label="No sticker" aria-pressed="${!shirt.sticker}">∅</button>${STICKERS.map((s) => `<button class="sticker-choice ${shirt.sticker === s ? "selected" : ""}" data-sticker="${s}" aria-label="${{ "✿": "Flower", "♡": "Heart", "★": "Star", "☀": "Sun" }[s]} sticker" aria-pressed="${shirt.sticker === s}">${s}</button>`).join("")}</div><button class="button primary" id="save-shirt" ${saved ? "disabled" : ""}>${icon("line")}${saved ? "Hanging with love!" : "Hang it on the clothesline"}</button><button class="button secondary" id="download-shirt">${icon("download")} Save my shirt</button><p class="button-caption">${sharedGallery ? "Share a little love with everyone celebrating." : "This clothesline is saved on this device."}</p>`;
+    renderFinish(content);
+  }
+  stickerEditor.sync();
+  if (!renderer || saving) {
+    content
+      .querySelectorAll("button, input")
+      .forEach((button) => (button.disabled = true));
+  }
+}
+function renderFinish(content) {
+  const selected = shirt.stickers.find((s) => s.id === selectedSticker);
+  content.innerHTML = `<div class="finish-heading"><p class="step-kicker">${demo ? "PRACTICE MAKES LOVELY" : "THE CLARK FAMILY IS GROWING"}</p><h2>${color === "pink" ? "It’s a girl!" : "It’s a boy!"}</h2><p class="step-description">${demo ? "A little practice, a whole lot of love." : "Our second little girl. Madison’s going to be a big sister!"}</p></div><div class="finish-tabs" role="tablist" aria-label="Finish your shirt"><button role="tab" id="decorate-tab" aria-controls="finish-panel" aria-selected="${finishTab === "decorate"}">1. Decorate</button><button role="tab" id="share-tab" aria-controls="finish-panel" aria-selected="${finishTab === "share"}">2. Save & share</button></div><div id="finish-panel" role="tabpanel" aria-labelledby="${finishTab === "decorate" ? "decorate-tab" : "share-tab"}"></div>`;
+  $("#decorate-tab").onclick = () => {
+    finishTab = "decorate";
+    renderStep();
+  };
+  $("#share-tab").onclick = () => {
+    finishTab = "share";
+    renderStep();
+  };
+  const panel = $("#finish-panel");
+  if (finishTab === "decorate") {
+    panel.innerHTML = `<div class="sticker-palette" role="group" aria-label="Add stickers">${STICKERS.map((symbol) => `<button class="sticker-choice" data-symbol="${symbol}" aria-label="${STICKER_NAMES[symbol]} sticker" ${saved || shirt.stickers.length >= 8 ? "disabled" : ""}>${symbol}</button>`).join("")}<button class="random-stickers" id="random-stickers" ${saved || shirt.stickers.length >= 8 ? "disabled" : ""}>Surprise me ✧</button></div><p class="editor-instruction" id="editor-status" aria-live="polite">${shirt.stickers.length}/8 stickers · ${selected ? "Drag your sticker, or use the controls below." : "Tap a sticker to add it. Add a few, or keep it simple."}</p><div class="sticker-tools ${selected ? "" : "empty"}">${
+      selected
+        ? `<div class="size-control"><label for="sticker-size">Size</label><input id="sticker-size" type="range" min="12" max="32" step="1" value="${Math.round(selected.size * 100)}" ${saved ? "disabled" : ""}/><span id="sticker-size-label">${Math.round(selected.size * 100)}</span><button class="text-button" id="remove-sticker" ${saved ? "disabled" : ""}>Remove</button></div><div class="move-controls" role="group" aria-label="Move selected sticker"><span>Move</span>${[
+            ["left", "←"],
+            ["up", "↑"],
+            ["down", "↓"],
+            ["right", "→"],
+          ]
+            .map(
+              ([dir, glyph]) =>
+                `<button data-move="${dir}" aria-label="Move sticker ${dir}" ${saved ? "disabled" : ""}>${glyph}</button>`,
+            )
+            .join(
+              "",
+            )}<button class="center-sticker" id="center-sticker" ${saved ? "disabled" : ""}>Center</button></div>`
+        : "<span>Just a little extra love. Stickers are optional.</span>"
+    }</div><button class="button primary" id="finish-decorating">Save & share ${icon("arrow")}</button>`;
+    panel.querySelectorAll("[data-symbol]").forEach(
+      (button) =>
+        (button.onclick = () => {
+          const sticker = addSticker(shirt, button.dataset.symbol);
+          if (sticker) selectedSticker = sticker.id;
+          renderStep();
+        }),
+    );
+    $("#random-stickers").onclick = () => {
+      const count = Math.min(3, 8 - shirt.stickers.length);
+      for (let i = 0; i < count; i++) {
+        const sticker = addSticker(
+          shirt,
+          STICKERS[Math.floor(Math.random() * STICKERS.length)],
+          true,
+        );
+        selectedSticker = sticker.id;
+      }
+      renderStep();
+    };
+    $("#finish-decorating").onclick = () => {
+      finishTab = "share";
+      renderStep();
+      content.scrollTop = 0;
+    };
+    if (selected) {
+      $("#sticker-size").oninput = (event) => {
+        selected.size = Number(event.target.value) / 100;
+        constrainSticker(selected);
+        stickerEditor.sync();
+        updateStickerSize();
+      };
+      panel.querySelectorAll("[data-move]").forEach(
+        (button) =>
+          (button.onclick = () => {
+            const moves = {
+              left: [-0.04, 0],
+              right: [0.04, 0],
+              up: [0, 0.04],
+              down: [0, -0.04],
+            };
+            const [x, y] = moves[button.dataset.move];
+            selected.x += x;
+            selected.y += y;
+            constrainSticker(selected);
+            stickerEditor.sync();
+          }),
+      );
+      $("#center-sticker").onclick = () => {
+        selected.x = 0;
+        selected.y = 0;
+        stickerEditor.sync();
+      };
+      $("#remove-sticker").onclick = () => {
+        shirt.stickers = shirt.stickers.filter((s) => s.id !== selectedSticker);
+        selectedSticker = shirt.stickers.at(-1)?.id || null;
+        renderStep();
+      };
+    }
+  } else {
+    panel.innerHTML = `<div class="name-fields"><div><label class="input-label" for="guest-name">Made by <span>optional</span></label><input id="guest-name" maxlength="32" placeholder="Your name" autocomplete="given-name" ${saved ? "disabled" : ""}/></div><div><label class="input-label" for="shirt-title">Give your tee a name <span>optional</span></label><input id="shirt-title" maxlength="48" placeholder="A little ray of sunshine" ${saved ? "disabled" : ""}/></div></div><button class="button primary" id="save-shirt" ${saved ? "disabled" : ""}>${icon("line")}${saved ? "Hanging with love!" : saving ? "Hanging your shirt…" : "Hang it on the clothesline"}</button><button class="button secondary" id="download-shirt">${icon("download")} Save my shirt</button><p class="button-caption">${sharedGallery ? "A little hello from everyone who loves her." : "This clothesline is saved on this device."}</p>`;
     $("#guest-name").value = shirt.name;
     $("#shirt-title").value = shirt.title;
     $("#guest-name").oninput = (e) => (shirt.name = e.target.value);
     $("#shirt-title").oninput = (e) => (shirt.title = e.target.value);
-    content.querySelectorAll("[data-sticker]").forEach(
-      (b) =>
-        (b.onclick = () => {
-          shirt.sticker = b.dataset.sticker;
-          $("#shirt-sticker").textContent = shirt.sticker;
-          renderStep();
-        }),
-    );
-    $("#download-shirt").onclick = downloadShirt;
     $("#save-shirt").onclick = hangShirt;
-    if (saved) {
-      $("#guest-name").disabled = true;
-      $("#shirt-title").disabled = true;
-      content
-        .querySelectorAll("[data-sticker]")
-        .forEach((b) => (b.disabled = true));
-    }
-  }
-  if (!renderer) {
-    content
-      .querySelectorAll("button")
-      .forEach((button) => (button.disabled = true));
+    $("#download-shirt").onclick = downloadShirt;
   }
 }
-function tieBand() {
+function updateStickerSize() {
+  const sticker = shirt.stickers.find((s) => s.id === selectedSticker);
+  if (sticker && $("#sticker-size")) {
+    $("#sticker-size").value = Math.round(sticker.size * 100);
+    $("#sticker-size-label").textContent = Math.round(sticker.size * 100);
+  }
+}
+function wireBandDrag(button) {
+  let dragged = false;
+  button.onclick = () => {
+    if (!dragged) tieBand();
+  };
+  button.onpointerdown = (event) => {
+    if (animating || shirt.bands >= 3) return;
+    dragged = false;
+    const start = { x: event.clientX, y: event.clientY };
+    let ghost;
+    button.setPointerCapture(event.pointerId);
+    button.onpointermove = (move) => {
+      if (Math.hypot(move.clientX - start.x, move.clientY - start.y) > 8)
+        dragged = true;
+      if (!dragged) return;
+      if (!ghost) {
+        ghost = document.createElement("span");
+        ghost.className = "band-ghost";
+        ghost.setAttribute("aria-hidden", "true");
+        document.body.append(ghost);
+      }
+      ghost.style.left = `${move.clientX}px`;
+      ghost.style.top = `${move.clientY}px`;
+      $(".workbench").classList.toggle(
+        "drop-ready",
+        renderer.contains(renderer.point(move), shirt.fold),
+      );
+    };
+    const finish = (end, cancelled) => {
+      button.onpointermove = null;
+      ghost?.remove();
+      $(".workbench").classList.remove("drop-ready");
+      if (!cancelled && dragged) {
+        const point = renderer.point(end);
+        if (renderer.contains(point, shirt.fold)) tieBand(point);
+        else
+          notify(
+            "Drop the band onto the folded shirt, or tap Add a rubber band.",
+          );
+      }
+    };
+    button.onpointerup = (end) => finish(end, false);
+    button.onpointercancel = (end) => {
+      dragged = true;
+      finish(end, true);
+    };
+  };
+}
+
+function tieBand(point) {
   if (step !== 1 || animating || shirt.bands >= 3) return;
-  shirt.bands++;
+  addBand(shirt, point);
   renderStep();
   draw();
 }
@@ -267,7 +449,6 @@ function performReveal() {
   $("#reveal-button").disabled = true;
   $("#reveal-button").textContent = "A little secret is unfolding…";
   $("#reset-button").disabled = true;
-  shirt.bands = 0;
   animate(0, 1, 2800, () => {
     step = 4;
     hasRevealed = true;
@@ -275,7 +456,7 @@ function performReveal() {
     $("#reveal-badge").hidden = false;
     $("#reveal-kicker").textContent = demo
       ? "THE DEMO SURPRISE"
-      : "OUR LITTLE SECRET IS OUT";
+      : "MADISON IS GOING TO BE A BIG SISTER";
     $("#reveal-title").textContent =
       color === "pink" ? "Hello, baby girl!" : "Hello, baby boy!";
     $("#bench-hint").textContent = "One of a kind. Made by you, with love.";
@@ -310,15 +491,7 @@ function snapshot(size = 1000, forGallery = false) {
     ctx.fillRect(0, 0, output.width, output.height);
   }
   ctx.drawImage(source, 0, 0);
-  if (shirt.sticker) {
-    ctx.fillStyle = "#fffaf2";
-    ctx.strokeStyle = "#34372c";
-    ctx.lineWidth = size * 0.0015;
-    ctx.textAlign = "center";
-    ctx.font = `${size * 0.08}px Georgia`;
-    ctx.fillText(shirt.sticker, size * 0.5, size * 0.54);
-    ctx.strokeText(shirt.sticker, size * 0.5, size * 0.54);
-  }
+  paintStickers(ctx, shirt.stickers, size, size);
   ctx.textAlign = "center";
   ctx.fillStyle = "#34372c";
   ctx.font = `${size * 0.029}px Georgia`;
@@ -340,7 +513,9 @@ function snapshot(size = 1000, forGallery = false) {
   ctx.fillStyle = "#747666";
   ctx.font = `${size * 0.013}px sans-serif`;
   ctx.fillText(
-    demo ? "A LITTLE SECRET · DEMO SHIRT" : "A LITTLE SECRET · OUR LITTLE LOVE",
+    demo
+      ? "A LITTLE SECRET · DEMO SHIRT"
+      : "THE CLARK FAMILY · EST. 2021 · MADISON’S LITTLE SISTER",
     size * 0.5,
     size * 1.1,
   );
@@ -351,7 +526,19 @@ function snapshot(size = 1000, forGallery = false) {
     const cropped = document.createElement("canvas");
     cropped.width = size;
     cropped.height = Math.round(size * 0.875);
-    cropped.getContext("2d").drawImage(output, size * 0.1, size * 0.15, size * 0.8, size * 0.7, 0, 0, cropped.width, cropped.height);
+    cropped
+      .getContext("2d")
+      .drawImage(
+        output,
+        size * 0.1,
+        size * 0.15,
+        size * 0.8,
+        size * 0.7,
+        0,
+        0,
+        cropped.width,
+        cropped.height,
+      );
     return cropped;
   }
   return output;
@@ -364,9 +551,9 @@ function downloadShirt() {
   notify("Your little masterpiece is ready to keep.");
 }
 async function hangShirt() {
-  const button = $("#save-shirt");
-  button.disabled = true;
-  button.textContent = "Finding a little spot…";
+  if (saved || saving) return;
+  saving = true;
+  renderStep();
   try {
     const entry = {
       id: shirt.id,
@@ -377,6 +564,7 @@ async function hangShirt() {
     };
     await saveEntry(entry);
     saved = true;
+    saving = false;
     renderStep();
     await refreshCount();
     notify(
@@ -386,9 +574,9 @@ async function hangShirt() {
     );
     showGallery();
   } catch (error) {
+    saving = false;
+    renderStep();
     notify(error.message);
-    button.disabled = false;
-    button.innerHTML = `${icon("line")} Try hanging it again`;
   }
 }
 async function refreshCount() {
@@ -400,6 +588,7 @@ async function refreshCount() {
 }
 function showStudio() {
   view = "studio";
+  document.body.classList.remove("gallery-open");
   $("#gallery-view").hidden = true;
   $("#studio-view").hidden = false;
   $("#studio-nav").classList.add("active");
@@ -408,6 +597,7 @@ function showStudio() {
 }
 async function showGallery() {
   view = "gallery";
+  document.body.classList.add("gallery-open");
   $("#studio-view").hidden = true;
   $("#gallery-view").hidden = false;
   $("#studio-nav").classList.remove("active");
@@ -484,7 +674,8 @@ $("#reset-dialog").addEventListener("close", () => {
   saved = false;
   animating = false;
   keyboardPoint = { x: 0, y: 0 };
-  $("#shirt-sticker").textContent = "";
+  selectedSticker = null;
+  finishTab = "decorate";
   $("#reveal-badge").hidden = true;
   $(".workbench").classList.remove("revealed", "pink", "blue");
   $("#bench-hint").textContent = "Your blank canvas. So many possibilities.";

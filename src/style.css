@@ -95,7 +95,7 @@ button:not(:disabled):active {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   position: relative;
   color: #777b6c;
@@ -125,11 +125,11 @@ button:not(:disabled):active {
   height: 20px;
   background: #e9eadf;
   border-radius: 50%;
-  font-size: 12px;
+  font-size: 13px;
   padding: 2px 5px;
 }
 .header-note {
-  font-size: 12px;
+  font-size: 13px;
   color: #777b6c;
   display: flex;
   align-items: center;
@@ -152,7 +152,7 @@ main {
 }
 .eyebrow,
 .step-kicker {
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 2px;
   font-weight: 700;
   margin: 0 0 17px;
@@ -176,33 +176,38 @@ h1 em {
   margin: 17px 0 0;
   color: #777b6c;
   line-height: 1.65;
-  font-size: 15px;
+  font-size: 17px;
 }
 .intro-copy br {
   display: none;
 }
 .intro-stamp {
-  width: 119px;
-  height: 119px;
+  width: 142px;
+  height: 142px;
   border: 1px solid #b4b99d;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 9px;
+  gap: 7px;
+  padding: 18px 13px 17px;
   transform: rotate(11deg);
   margin-right: 9px;
   flex-shrink: 0;
   color: #737b53;
 }
 .intro-stamp span {
+  display: block;
   font-size: 8px;
-  letter-spacing: 1.1px;
+  letter-spacing: 0.8px;
+  line-height: 1.15;
+  text-align: center;
+  white-space: nowrap;
 }
 .intro-stamp strong {
   font:
-    italic 23px/1 Georgia,
+    italic 24px/1.08 Georgia,
     serif;
   text-align: center;
 }
@@ -235,7 +240,7 @@ h1 em {
 }
 .bench-top {
   height: 58px;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 1.3px;
   gap: 14px;
   color: #69705b;
@@ -256,7 +261,7 @@ h1 em {
   border: 1px solid #c7ccba;
   border-radius: 3px;
   padding: 5px 7px;
-  font-size: 9px;
+  font-size: 10px;
 }
 .canvas-wrap {
   flex: 1;
@@ -288,7 +293,7 @@ h1 em {
 .bench-bottom {
   min-height: 64px;
   gap: 20px;
-  font-size: 12px;
+  font-size: 14px;
   color: #747b64;
 }
 #bench-hint {
@@ -302,7 +307,7 @@ h1 em {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  font-size: 12px;
+  font-size: 13px;
   white-space: nowrap;
   color: #626b51;
   text-decoration: underline;
@@ -327,7 +332,7 @@ h1 em {
   gap: 9px;
 }
 .steps li {
-  font-size: 12px;
+  font-size: 14px;
   color: #939787;
   display: flex;
   align-items: center;
@@ -343,7 +348,7 @@ h1 em {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 11px;
 }
 .steps li.active {
   color: var(--ink);
@@ -369,7 +374,7 @@ h1 em {
   color: var(--ink);
 }
 .step-kicker {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 1.5px;
   color: #7b816c;
   margin-bottom: 10px;
@@ -382,7 +387,7 @@ h2 {
   margin: 0 0 12px;
 }
 .step-description {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.75;
   color: #7a7e6f;
   margin: 0 0 22px;
@@ -425,13 +430,13 @@ h2 {
 }
 .fold-option strong {
   display: block;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   margin-bottom: 5px;
 }
 .fold-option small {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   color: #7b806e;
 }
 .radio-dot {
@@ -450,7 +455,7 @@ h2 {
   min-height: 49px;
   border-radius: 7px;
   padding: 12px 17px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -488,7 +493,7 @@ h2 {
   margin-top: 9px;
 }
 .button-caption {
-  font-size: 10px;
+  font-size: 12px;
   color: #8b8f7e;
   text-align: center;
   margin: 12px 0 0;
@@ -508,12 +513,12 @@ h2 {
   flex-shrink: 0;
 }
 .secret-note p {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.7;
   margin: 0;
 }
 .secret-note p span {
-  font-size: 10px;
+  font-size: 11px;
   color: #9b9e91;
 }
 .under-workspace {
@@ -525,7 +530,7 @@ h2 {
   color: #929885;
 }
 .under-workspace > span:first-child {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 1.2px;
 }
 .under-workspace > span:last-child {
@@ -555,7 +560,7 @@ footer p {
   margin: 0;
 }
 footer > span:last-child {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 1px;
 }
 .band-visual {
@@ -716,8 +721,9 @@ footer > span:last-child {
 }
 .reveal-badge span {
   display: block;
-  font-size: 9px;
-  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
   margin-bottom: 5px;
   color: #657387;
 }
@@ -729,14 +735,14 @@ footer > span:last-child {
   color: #9e536c;
 }
 .input-label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   display: flex;
   gap: 7px;
   margin: 14px 0 6px;
 }
 .input-label span {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   color: #9ba08e;
 }
@@ -1333,11 +1339,816 @@ dialog h2 {
   }
 }
 /* Transparent shirt cutouts hang directly from the shared clothesline. */
-.gallery-shirt img{border:0;box-shadow:none}
-.gallery-shirt:before{top:7px}
-.gallery-shirt:nth-child(3n + 2):before{transform:rotate(-3deg)}
-.gallery-shirt:after{content:none}
-.clothespins{position:absolute;inset:0;pointer-events:none}
-.clothespins:before,.clothespins:after{content:'';position:absolute;top:-4px;width:11px;height:28px;border-radius:2px;background:linear-gradient(90deg,#b7a07c,#d3bd99 50%,#ab9676);box-shadow:1px 2px 3px #363a2e20}
-.clothespins:before{left:32%}.clothespins:after{right:32%}
-@media(max-width:760px){.clothespins:before,.clothespins:after{width:8px;height:21px}}
+.gallery-shirt img {
+  border: 0;
+  box-shadow: none;
+}
+.gallery-shirt:before {
+  top: 7px;
+}
+.gallery-shirt:nth-child(3n + 2):before {
+  transform: rotate(-3deg);
+}
+.gallery-shirt:after {
+  content: none;
+}
+.clothespins {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.clothespins:before,
+.clothespins:after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 11px;
+  height: 28px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #b7a07c, #d3bd99 50%, #ab9676);
+  box-shadow: 1px 2px 3px #363a2e20;
+}
+.clothespins:before {
+  left: 32%;
+}
+.clothespins:after {
+  right: 32%;
+}
+@media (max-width: 760px) {
+  .clothespins:before,
+  .clothespins:after {
+    width: 8px;
+    height: 21px;
+  }
+}
+/* Direct manipulation has matching large, single-tap controls. */
+.band-visual {
+  height: 104px;
+  gap: 22px;
+  margin: 8px 0 16px;
+}
+.band-pick {
+  width: 70px;
+  height: 88px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  touch-action: none;
+  cursor: grab;
+  flex-shrink: 0;
+}
+.band-pick .rubber-band {
+  display: block;
+  width: 49px;
+  height: 62px;
+  pointer-events: none;
+}
+.band-pick.used {
+  opacity: 0.18;
+}
+.band-count {
+  font-size: 14px;
+  color: #6d755d;
+  white-space: nowrap;
+}
+.band-ghost {
+  position: fixed;
+  width: 72px;
+  height: 50px;
+  border: 5px solid #868273;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 4px 8px #0002;
+}
+.workbench.drop-ready {
+  outline: 3px dashed #6d7a4d;
+  outline-offset: -6px;
+}
+.easy-actions {
+  display: flex;
+  gap: 9px;
+  margin-bottom: 12px;
+}
+.easy-actions #add-band {
+  margin: 0;
+  flex: 1;
+}
+.easy-actions #undo-band {
+  width: 70px;
+  margin: 0;
+}
+.easy-dye {
+  margin: 8px 0 12px;
+  min-height: 42px;
+}
+.dye-bottles {
+  margin-top: 20px;
+}
+.dye-progress {
+  margin-bottom: 12px;
+}
+#sticker-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.placed-sticker {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: max(44px, calc(var(--sticker-size) * 1.3));
+  height: max(44px, calc(var(--sticker-size) * 1.3));
+  padding: 0;
+  border: 1px dashed transparent;
+  border-radius: 8px;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+  line-height: 1;
+}
+.placed-sticker span {
+  font: var(--sticker-size) / 1 Georgia;
+  color: #fffaf2;
+  -webkit-text-stroke: var(--sticker-stroke) #34372c;
+  pointer-events: none;
+}
+.placed-sticker.selected {
+  border-color: #606d40;
+  background: #ffffff15;
+}
+.placed-sticker.dragging {
+  cursor: grabbing;
+  background: #ffffff30;
+}
+.placed-sticker:disabled {
+  opacity: 1;
+  pointer-events: none;
+}
+.placed-sticker:not(:disabled):active {
+  transform: translate(-50%, -50%);
+}
+.finish-heading .step-description {
+  margin-bottom: 14px;
+}
+.finish-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 15px;
+  gap: 20px;
+}
+.finish-tabs button {
+  background: transparent;
+  border: 0;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 44px;
+  color: #7c836b;
+}
+.finish-tabs [aria-selected="true"] {
+  color: var(--ink);
+  box-shadow: 0 2px var(--ink);
+}
+.sticker-palette {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.sticker-palette .sticker-choice {
+  width: 44px;
+  height: 44px;
+  font-size: 29px;
+}
+.random-stickers {
+  min-height: 44px;
+  border: 1px solid #c9d1b5;
+  border-radius: 6px;
+  background: #eef1e1;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+.editor-instruction {
+  font-size: 13px;
+  color: #737c62;
+  line-height: 1.5;
+  margin: 12px 0;
+}
+.sticker-tools {
+  margin: 12px 0 18px;
+  min-height: 104px;
+}
+.sticker-tools.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: italic 15px Georgia;
+  color: #808a6f;
+  border: 1px dashed #d4d9c7;
+  border-radius: 7px;
+}
+.size-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.size-control input {
+  flex: 1;
+  min-width: 60px;
+  accent-color: #6b784b;
+  cursor: pointer;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  min-height: 44px;
+  touch-action: pan-y;
+}
+.size-control .text-button {
+  min-height: 44px;
+  font-size: 13px;
+}
+.size-control > span {
+  min-width: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.move-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 6px;
+  font-size: 13px;
+}
+.move-controls > span {
+  margin-right: auto;
+}
+.move-controls button {
+  border: 1px solid #d0d7bf;
+  border-radius: 6px;
+  background: transparent;
+  height: 44px;
+  min-width: 44px;
+  font-size: 20px;
+}
+.move-controls .center-sticker {
+  font-size: 13px;
+  padding: 0 10px;
+}
+.name-fields {
+  margin-bottom: 20px;
+}
+.name-fields .input-label {
+  font-size: 14px;
+}
+.name-fields input {
+  font-size: 16px;
+  min-height: 44px;
+}
+.name-fields .input-label span {
+  font-size: 12px;
+}
+body[data-step="4"] .secret-note {
+  display: none;
+}
+.reveal-badge span {
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+/* Phone studio: the shirt stays visible while only the controls scroll. */
+@media (max-width: 900px) {
+  body:not(.gallery-open) {
+    height: 100dvh;
+    overflow: hidden;
+  }
+  body:not(.gallery-open) #app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .header {
+    height: 60px;
+    min-height: 60px;
+    flex: 0 0 60px;
+    padding: 0 12px;
+    margin: 0;
+    gap: 10px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+  .brand {
+    font-size: 17px;
+    letter-spacing: -0.7px;
+    gap: 5px;
+  }
+  .brand-flower {
+    font-size: 27px;
+  }
+  .header-note {
+    display: none;
+  }
+  .header nav {
+    width: auto;
+    gap: 14px;
+    height: 60px;
+    flex-shrink: 0;
+  }
+  .nav-link {
+    font-size: 12px;
+    align-items: center;
+    padding: 0;
+    gap: 4px;
+  }
+  .nav-link svg {
+    display: none;
+  }
+  .nav-link .count {
+    font-size: 11px;
+    min-width: 18px;
+    height: 18px;
+  }
+  body:not(.gallery-open) main {
+    padding: 0 12px 10px;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+  }
+  #studio-view {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .intro {
+    margin: 0;
+    height: 38px;
+    min-height: 38px;
+    flex: 0 0 38px;
+    justify-content: center;
+  }
+  .intro > div:first-child {
+    flex: initial;
+  }
+  .intro .eyebrow {
+    font-size: 11px;
+    letter-spacing: 1.3px;
+    text-align: center;
+    margin: 0;
+  }
+  .intro h1,
+  .intro-copy,
+  .intro-stamp {
+    display: none;
+  }
+  .workspace {
+    min-height: 0;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(180px, 37%) minmax(0, 1fr);
+    gap: 12px;
+  }
+  .workbench {
+    min-height: 0;
+    height: auto;
+    position: relative;
+    top: auto;
+    order: initial;
+    box-shadow: none;
+    border-radius: 10px;
+  }
+  .bench-top {
+    height: 24px;
+    min-height: 24px;
+    font-size: 9px;
+    margin: 0 12px;
+    letter-spacing: 0.7px;
+  }
+  .bench-top #edition {
+    display: none;
+  }
+  .canvas-wrap {
+    min-height: 0;
+    flex: 1;
+  }
+  .side-note {
+    display: none;
+  }
+  .bench-bottom {
+    min-height: 30px;
+    height: 30px;
+    margin: 0 12px;
+    font-size: 11px;
+    gap: 8px;
+  }
+  .bench-bottom .text-button {
+    font-size: 12px;
+    min-height: 30px;
+  }
+  #bench-hint {
+    max-width: 74%;
+    line-height: 1.2;
+  }
+  .bench-label {
+    gap: 6px;
+  }
+  .controls {
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0;
+  }
+  .steps {
+    flex: 0 0 34px;
+    margin: 0 0 10px;
+    gap: 8px;
+  }
+  .steps li {
+    font-size: 12px;
+    padding: 0 0 9px;
+    gap: 6px;
+  }
+  .steps li span {
+    height: 21px;
+    width: 21px;
+    font-size: 11px;
+  }
+  #step-content {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    padding: 2px 2px 5px;
+    scroll-padding: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .step-kicker,
+  .button-caption,
+  .keyboard-help,
+  .secret-note,
+  .under-workspace,
+  body:not(.gallery-open) footer {
+    display: none;
+  }
+  #step-content h2 {
+    font-size: 23px;
+    letter-spacing: -0.7px;
+    margin: 0 0 5px;
+  }
+  .step-description {
+    font-size: 14px;
+    line-height: 1.45;
+    margin: 0 0 12px;
+  }
+  .step-description br {
+    display: none;
+  }
+  .fold-options {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .fold-option {
+    flex-direction: column;
+    gap: 5px;
+    text-align: center;
+    padding: 8px 3px;
+    min-height: 80px;
+    border-radius: 7px;
+  }
+  .fold-option small,
+  .radio-dot {
+    display: none;
+  }
+  .fold-option strong {
+    font-size: 13px;
+    margin: 0;
+  }
+  .fold-symbol {
+    font-size: 29px;
+    width: auto;
+    height: 31px;
+  }
+  .fold-1 {
+    font-size: 36px;
+  }
+  .fold-2 {
+    font-size: 30px;
+  }
+  .button {
+    min-height: 44px;
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 7px;
+  }
+  .band-visual {
+    height: 76px;
+    margin: 4px 0 10px;
+    gap: 15px;
+  }
+  .band-pick {
+    height: 72px;
+    width: 60px;
+  }
+  .band-pick .rubber-band {
+    height: 50px;
+    width: 40px;
+  }
+  .band-count {
+    font-size: 13px;
+  }
+  .easy-actions {
+    margin-bottom: 8px;
+  }
+  .dye-bottles {
+    margin: 8px 0;
+    gap: 9px;
+    justify-content: stretch;
+  }
+  .dye-choice {
+    max-width: none;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    min-height: 68px;
+  }
+  .dye-choice strong {
+    font-size: 13px;
+  }
+  .bottle {
+    width: 25px;
+    height: 34px;
+    margin-top: 12px;
+    border-radius: 6px;
+  }
+  .bottle:before {
+    width: 13px;
+    height: 8px;
+    left: 6px;
+    top: -6px;
+  }
+  .bottle:after {
+    height: 12px;
+    width: 7px;
+    left: 9px;
+    top: -16px;
+  }
+  .bottle-mark {
+    font-size: 12px;
+    width: 20px;
+    padding: 2px 0;
+  }
+  .easy-dye {
+    margin: 8px 0;
+    min-height: 40px;
+  }
+  .dye-progress {
+    margin: 3px 0 8px;
+    font-size: 12px;
+  }
+  .dye-progress .text-button {
+    font-size: 13px;
+    min-height: 32px;
+  }
+  .reveal-heart {
+    font-size: 88px;
+    margin: 8px 0 12px;
+  }
+  .reveal-heart span {
+    font-size: 12px;
+  }
+  .reveal-badge {
+    bottom: -4px;
+  }
+  .reveal-badge span {
+    font-size: 8px;
+    letter-spacing: 0.4px;
+  }
+  .reveal-badge strong {
+    font-size: 17px;
+  }
+  body[data-step="4"] .bench-bottom #bench-hint {
+    visibility: hidden;
+  }
+  .finish-heading .step-description {
+    margin-bottom: 5px;
+    font-size: 13px;
+  }
+  .finish-tabs {
+    margin-bottom: 9px;
+    gap: 20px;
+  }
+  .finish-tabs button {
+    padding: 6px 0;
+    min-height: 36px;
+    font-size: 13px;
+  }
+  .sticker-palette {
+    gap: 5px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr) auto;
+  }
+  .sticker-palette .sticker-choice {
+    width: 100%;
+    min-width: 32px;
+    height: 42px;
+    font-size: 26px;
+  }
+  .random-stickers {
+    font-size: 11px;
+    padding: 5px;
+    min-height: 42px;
+  }
+  .editor-instruction {
+    font-size: 12px;
+    margin: 7px 0;
+    line-height: 1.4;
+  }
+  .sticker-tools {
+    min-height: 92px;
+    margin: 4px 0 9px;
+  }
+  .sticker-tools.empty {
+    font-size: 13px;
+    min-height: 65px;
+  }
+  .size-control {
+    gap: 7px;
+  }
+  .size-control input {
+    height: 36px;
+    min-height: 36px;
+  }
+  .size-control .text-button {
+    min-height: 36px;
+  }
+  .move-controls {
+    margin-top: 2px;
+    gap: 6px;
+  }
+  .move-controls button {
+    height: 38px;
+    min-width: 40px;
+  }
+  .name-fields {
+    margin: 0 0 14px;
+  }
+  .name-fields .input-label {
+    margin-top: 8px;
+    font-size: 13px;
+  }
+  .name-fields input {
+    height: 42px;
+    min-height: 42px;
+  }
+  body.gallery-open main {
+    padding: 25px 20px;
+  }
+  .gallery-open #studio-view {
+    display: none;
+  }
+}
+@media (max-width: 380px) {
+  .brand {
+    font-size: 15px;
+  }
+  .brand-flower {
+    font-size: 23px;
+  }
+  .header nav {
+    gap: 9px;
+  }
+  .nav-link {
+    font-size: 11px;
+  }
+  .header {
+    padding: 0 10px;
+  }
+  .random-stickers {
+    font-size: 10px;
+  }
+  .sticker-palette {
+    gap: 3px;
+  }
+  .sticker-palette .sticker-choice {
+    min-width: 28px;
+  }
+  .band-visual {
+    gap: 8px;
+  }
+}
+@media (max-width: 900px) and (max-height: 720px) {
+  .header,
+  .header nav {
+    height: 52px;
+    min-height: 52px;
+    flex-basis: 52px;
+  }
+  .intro {
+    height: 30px;
+    min-height: 30px;
+    flex-basis: 30px;
+  }
+  .workspace {
+    grid-template-rows: minmax(150px, 33%) minmax(0, 1fr);
+    gap: 8px;
+  }
+  .steps {
+    margin-bottom: 6px;
+  }
+  #step-content h2 {
+    font-size: 21px;
+  }
+  .step-description {
+    font-size: 13px;
+    margin-bottom: 7px;
+  }
+  .fold-options {
+    margin: 8px 0;
+  }
+  .fold-option {
+    min-height: 70px;
+  }
+  .sticker-tools {
+    min-height: 80px;
+  }
+  .finish-heading .step-description {
+    font-size: 12px;
+  }
+}
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 550px) {
+  .intro {
+    display: none;
+  }
+  .workspace {
+    grid-template-columns: 44% minmax(0, 1fr);
+    grid-template-rows: 1fr;
+    gap: 12px;
+  }
+  .header,
+  .header nav {
+    height: 45px;
+    min-height: 45px;
+    flex-basis: 45px;
+  }
+  body:not(.gallery-open) main {
+    padding-top: 8px;
+  }
+  .bench-top {
+    font-size: 8px;
+  }
+  .bench-bottom #bench-hint {
+    display: none;
+  }
+}
+.nav-mobile {
+  display: none;
+}
+@media (max-width: 900px) {
+  .nav-desktop {
+    display: none;
+  }
+  .nav-mobile {
+    display: inline;
+  }
+  .nav-link {
+    white-space: nowrap;
+  }
+  .header nav {
+    flex-shrink: 0;
+  }
+  .workspace {
+    grid-template-rows: minmax(180px, 42%) minmax(0, 1fr);
+  }
+  .reveal-badge span {
+    display: none;
+  }
+  #toast {
+    bottom: auto;
+    top: 62px;
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+}
+@media (max-width: 900px) and (max-height: 720px) {
+  .workspace {
+    grid-template-rows: minmax(160px, 40%) minmax(0, 1fr);
+  }
+}
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 550px) {
+  .workspace {
+    grid-template-rows: 1fr;
+  }
+}
+@media (max-width: 900px) {
+  #finish-decorating {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+  }
+}

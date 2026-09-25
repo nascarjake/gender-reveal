@@ -7,6 +7,7 @@ uniform float uFolded,uReveal,uSeed,uFold,uBands;
 uniform int uCount;
 uniform vec4 uDrops[64];
 uniform vec3 uColor;
+uniform vec2 uBandLines[3];
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7))+uSeed)*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
 float fbm(vec2 p){return .57*noise(p)+.28*noise(p*2.03)+.15*noise(p*4.01);}
@@ -47,7 +48,9 @@ void main(){
  if(uFold>.5&&uFold<1.5)ridges=sin(p.x*91.+fbm(p*22.)*10.);
  if(uFold>1.5)ridges=sin(fbm(p*12.)*45.);
  float resist=smoothstep(-.98,-.48,ridges)*.8+.2;
- float stain=clamp(density*.77,0.,1.)*mix(resist,.86,uFolded);
+ float tiedResist=1.;
+ for(int i=0;i<3;i++){if(float(i)>=uBands)break;vec2 band=uBandLines[i];float d=abs(dot(dyeP,vec2(cos(band.x),sin(band.x)))-band.y);tiedResist*=mix(.32,1.,smoothstep(.008,.025,d));}
+ float stain=clamp(density*.77,0.,1.)*mix(resist,.86,uFolded)*mix(tiedResist,1.,uFolded);
  vec3 grey=mix(vec3(.65),vec3(.19),tone);
  vec3 dye=mix(mix(uColor,vec3(1.),.43*(1.-tone)),uColor*.56,tone*.6);
  vec3 ink=mix(grey,dye,uReveal);
@@ -60,7 +63,7 @@ void main(){
  float seam=1.-smoothstep(.003,.007,abs(shirt(p)+.02));
  cloth*=1.-seam*.12*(1.-uFolded);
  float bands=0.;
- for(int i=0;i<3;i++){if(float(i)>=uBands)break;float t=float(i)*1.0472;float line=abs(p.x*cos(t)+p.y*sin(t));if(uFold>.5&&uFold<1.5)line=abs(p.y-(float(i)-1.)*.32);bands=max(bands,1.-smoothstep(.013,.019,line));}
+ for(int i=0;i<3;i++){if(float(i)>=uBands)break;vec2 band=uBandLines[i];float line=abs(p.x*cos(band.x)+p.y*sin(band.x)-band.y);bands=max(bands,1.-smoothstep(.013,.019,line));}
  cloth=mix(cloth,vec3(.38,.37,.34)+.13*smoothstep(-.012,.012,p.x),bands*uFolded);
  gl_FragColor=vec4(mix(vec3(.18,.17,.14),cloth,mask),max(mask,shadow));
 }`;
@@ -108,6 +111,7 @@ export class ShirtRenderer {
         "uSeed",
         "uFold",
         "uBands",
+        "uBandLines[0]",
         "uCount",
         "uDrops[0]",
         "uColor",
@@ -127,6 +131,11 @@ export class ShirtRenderer {
     gl.uniform1f(u.uSeed, shirt.seed);
     gl.uniform1f(u.uFold, shirt.fold);
     gl.uniform1f(u.uBands, shirt.bands);
+    const bands = new Float32Array(6);
+    shirt.bandPlacements.forEach((band, i) =>
+      bands.set([band.angle, band.offset], i * 2),
+    );
+    gl.uniform2fv(u["uBandLines[0]"], bands);
     gl.uniform1i(u.uCount, shirt.drops.length);
     const drops = new Float32Array(256);
     shirt.drops.forEach((d, i) => drops.set(d, i * 4));

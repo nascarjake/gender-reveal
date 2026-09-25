@@ -4,7 +4,7 @@ export default defineConfig({
   workers: 1,
   timeout: 30000,
   use: {
-    baseURL: "http://127.0.0.1:5173",
+    baseURL: "http://127.0.0.1:5174",
     viewport: { width: 1440, height: 1100 },
     launchOptions: {
       executablePath:
@@ -17,6 +17,12 @@ export default defineConfig({
       ],
     },
     reducedMotion: "reduce",
+  },
+  webServer: {
+    command: "npm run dev -- --port 5174 --strictPort",
+    url: "http://127.0.0.1:5174",
+    env: { VITE_REVEAL: "pink", VITE_GALLERY_URL: "" },
+    reuseExistingServer: false,
   },
   reporter: "list",
 });

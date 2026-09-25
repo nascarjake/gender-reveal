@@ -1,8 +1,6 @@
 import { validEntry } from "./model.js";
 const url = (import.meta.env.VITE_GALLERY_URL || "").replace(/\/$/, "");
-const collection = ["pink", "blue"].includes(import.meta.env.VITE_REVEAL)
-  ? import.meta.env.VITE_REVEAL
-  : "demo";
+import { collection } from "./config.js";
 export const sharedGallery = Boolean(url);
 const localKey = `little-secret-gallery-v1-${collection}`;
 async function request(path, options = {}) {
