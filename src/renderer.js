@@ -33,9 +33,10 @@ vec2 foldedPoint(vec2 p){
  if(uFold<.5){float t=a+r*9.;return vec2(cos(t),sin(t))*r*.62;}
  if(uFold<1.5)return vec2((abs(fract((p.x+.9)*3.)*2.-1.)-.5)*.49,p.y*.89);
  if(uFold<2.5)return vec2(sin(p.x*5.+p.y*3.),sin(p.y*5.-p.x*2.))*.36+vec2(fbm(p*9.))*.1;
- if(uFold<3.5){float ray=sin(a*8.+r*13.);return vec2(cos(a*8.),sin(a*8.))*(.16+r*.28+ray*.06);}
+ if(uFold<3.5){float ray=sin(a*5.+r*5.);return vec2(cos(a*5.),sin(a*5.))*(.18+r*.32+ray*.035);}
  if(uFold<4.5){float zig=abs(fract((p.x+p.y+.9)*2.7)*2.-1.)-.5;return vec2(zig*.72,(p.y-p.x)*.42);}
- return vec2(fbm(p*5.+3.),fbm(p*5.-7.))*.68-vec2(.34);
+ vec2 pools=vec2(fbm(p*2.7+3.),fbm(p*2.9-7.))*.7-vec2(.35);
+ return mix(p*.46,pools,.58);
 }
 void main(){
  vec2 p=(vUv-.5)*2.08; p.x*=uResolution.x/uResolution.y;
@@ -53,10 +54,15 @@ void main(){
  float ridges=sin(r*83.+a*5.+fbm(p*22.)*10.);
  if(uFold>.5&&uFold<1.5)ridges=sin(p.x*91.+fbm(p*22.)*10.);
  if(uFold>1.5&&uFold<2.5)ridges=sin(fbm(p*12.)*45.);
- if(uFold>2.5&&uFold<3.5)ridges=sin(a*14.+r*46.+fbm(p*15.)*8.);
- if(uFold>3.5&&uFold<4.5)ridges=sin((p.x+p.y)*86.+fbm(p*18.)*9.);
- if(uFold>4.5)ridges=sin(fbm(p*7.)*58.+r*16.);
+ if(uFold>2.5&&uFold<3.5)ridges=sin(a*5.+r*4.+(fbm(p*4.)-.5)*1.4);
+ if(uFold>3.5&&uFold<4.5)ridges=sin((abs(p.x)*.78-p.y)*12.+(fbm(p*5.)-.5)*1.5);
  float resist=smoothstep(-.98,-.48,ridges)*.8+.2;
+ if(uFold>2.5&&uFold<3.5)resist=mix(.42,1.,smoothstep(.1,.34,abs(ridges)));
+ if(uFold>3.5&&uFold<4.5)resist=mix(.38,1.,smoothstep(.12,.38,abs(ridges)));
+ if(uFold>4.5){
+  float pool=fbm(p*3.+vec2(fbm(p*1.6+3.),fbm(p*1.9-4.))*1.25);
+  resist=mix(.52,1.,smoothstep(.28,.72,pool));
+ }
  float tiedResist=1.;
  for(int i=0;i<3;i++){if(float(i)>=uBands)break;vec2 band=uBandLines[i];float d=abs(dot(dyeP,vec2(cos(band.x),sin(band.x)))-band.y);tiedResist*=mix(.32,1.,smoothstep(.008,.025,d));}
  float stain=clamp(density*.77,0.,1.)*mix(resist,.86,uFolded)*mix(tiedResist,1.,uFolded);

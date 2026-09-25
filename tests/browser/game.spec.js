@@ -166,7 +166,13 @@ test("the dye map accepts 800 splashes without increasing shader work", async ({
   expect(elapsed).toBeLessThan(8000);
   await expect(page.getByRole("button", { name: "Ready for the surprise" })).toBeEnabled();
 });
-for (const fold of ["Accordion", "Scrunch"])
+for (const fold of [
+  "Accordion",
+  "Scrunch",
+  "Sunburst",
+  "Chevron",
+  "Pebble",
+])
   test(`${fold}: tie, dye, undo, reveal and reset`, async ({ page }) => {
     await makeShirt(page, fold);
     await page.getByRole("button", { name: "Undo", exact: true }).click();
@@ -176,6 +182,10 @@ for (const fold of ["Accordion", "Scrunch"])
     await expect(
       page.getByRole("heading", { name: "It’s a girl!" }),
     ).toBeVisible();
+    await page.screenshot({
+      path: `/tmp/little-secret-${fold.toLowerCase()}-reveal.png`,
+      fullPage: true,
+    });
     await page.getByRole("button", { name: "Start over" }).click();
     await page.getByRole("button", { name: "Start fresh" }).click();
     await expect(
