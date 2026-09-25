@@ -161,7 +161,7 @@ test("mobile save uses the native file share handoff", async ({ page }) => {
   await page.getByRole("button", { name: "Ready for the surprise" }).click();
   await page.getByRole("button", { name: "Unfold the surprise" }).click();
   await page.getByRole("button", { name: "Save & share", exact: true }).click();
-  await page.getByRole("button", { name: "Save my shirt", exact: true }).click();
+  await page.getByRole("button", { name: "Save / share my shirt", exact: true }).click();
   await expect
     .poll(() => page.evaluate(() => window.__sharedShirt))
     .toEqual({ name: expect.stringMatching(/^a-little-secret-.*\.png$/), type: "image/png" });
