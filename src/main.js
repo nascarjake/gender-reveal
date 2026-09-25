@@ -636,12 +636,79 @@ function snapshot(size = 1000, forGallery = false) {
   }
   return output;
 }
-function downloadShirt() {
+function pngFile(filename) {
+  const dataUrl = snapshot().toDataURL("image/png");
+  const encoded = dataUrl.slice(dataUrl.indexOf(",") + 1);
+  const binary = atob(encoded);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index++)
+    bytes[index] = binary.charCodeAt(index);
+  return new File([bytes], filename, { type: "image/png" });
+}
+function triggerDownload(file) {
+  const url = URL.createObjectURL(file);
   const a = document.createElement("a");
-  a.download = `a-little-secret-${shirt.id.slice(0, 8)}.png`;
-  a.href = snapshot().toDataURL("image/png");
+  a.download = file.name;
+  a.href = url;
+  a.style.display = "none";
+  document.body.append(a);
   a.click();
-  notify("Your little masterpiece is ready to keep.");
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function usesMobileSaveSheet() {
+  return (
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent))
+  );
+}
+function downloadShirt() {
+  const button = $("#download-shirt");
+  if (!button || button.disabled) return;
+  const label = button.innerHTML;
+  const restore = () => {
+    button.disabled = false;
+    button.innerHTML = label;
+  };
+  button.disabled = true;
+  button.textContent = "Preparing your shirt…";
+  let file;
+  try {
+    file = pngFile(`a-little-secret-${shirt.id.slice(0, 8)}.png`);
+    const canShareFile =
+      usesMobileSaveSheet() &&
+      typeof navigator.share === "function" &&
+      (!navigator.canShare || navigator.canShare({ files: [file] }));
+    if (!canShareFile) {
+      triggerDownload(file);
+      restore();
+      notify("Your shirt is saving. Check your Downloads.");
+      return;
+    }
+    button.textContent = "Opening save options…";
+    notify("Choose Save Image or Save to Files to keep your shirt.");
+    navigator
+      .share({
+        title: "My little secret tie-dye shirt",
+        text: "Made with love.",
+        files: [file],
+      })
+      .then(() => notify("Your shirt is ready to keep!"))
+      .catch((error) => {
+        if (error?.name === "AbortError") notify("Save cancelled. You can try again anytime.");
+        else {
+          triggerDownload(file);
+          notify("Your shirt is saving. Check your Downloads.");
+        }
+      })
+      .finally(restore);
+  } catch {
+    if (file) {
+      triggerDownload(file);
+      notify("Your shirt is saving. Check your Downloads.");
+    } else notify("We couldn’t prepare your shirt. Please try again.");
+    restore();
+  }
 }
 async function hangShirt() {
   if (saved || saving) return;

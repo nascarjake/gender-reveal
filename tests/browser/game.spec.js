@@ -139,6 +139,33 @@ test("a blank shirt uses the next clothesline number", async ({
   await expect(page.locator("#gallery-count")).toHaveText("3");
   await expect(page.locator("#edition")).toHaveText("NO. 004");
 });
+test("mobile save uses the native file share handoff", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "maxTouchPoints", {
+      configurable: true,
+      value: 2,
+    });
+    Object.defineProperty(navigator, "canShare", {
+      configurable: true,
+      value: ({ files }) => Array.isArray(files) && files.length === 1,
+    });
+    Object.defineProperty(navigator, "share", {
+      configurable: true,
+      value: ({ files }) => {
+        window.__sharedShirt = { name: files[0].name, type: files[0].type };
+        return Promise.resolve();
+      },
+    });
+  });
+  await makeShirt(page);
+  await page.getByRole("button", { name: "Ready for the surprise" }).click();
+  await page.getByRole("button", { name: "Unfold the surprise" }).click();
+  await page.getByRole("button", { name: "Save & share", exact: true }).click();
+  await page.getByRole("button", { name: "Save my shirt", exact: true }).click();
+  await expect
+    .poll(() => page.evaluate(() => window.__sharedShirt))
+    .toEqual({ name: expect.stringMatching(/^a-little-secret-.*\.png$/), type: "image/png" });
+});
 test("the dye map accepts 800 splashes without increasing shader work", async ({
   page,
 }) => {
