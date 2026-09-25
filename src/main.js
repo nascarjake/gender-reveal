@@ -50,6 +50,11 @@ function icon(name) {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.shirt}</svg>`;
 }
 $("#app").innerHTML = `
+${
+  uiVersion === "v2"
+    ? `<section class="game-intro" id="game-intro" role="dialog" aria-modal="true" aria-labelledby="game-intro-title"><div class="game-intro-sparkles" aria-hidden="true"><span>✦</span><span>●</span><span>✳</span><span>●</span><span>✦</span><span>●</span></div><div class="game-intro-card"><div class="game-intro-icon" aria-hidden="true">${icon("shirt")}</div><p class="game-intro-kicker">A LITTLE FAMILY UPDATE</p><h1 id="game-intro-title">The Clark family is expecting another blessing in 2027.</h1><p class="game-intro-copy">Let’s play a game to find out what we’re having!</p><div class="game-intro-levels" aria-label="Fold, tie, dye, and reveal"><span>Fold</span><i></i><span>Tie</span><i></i><span>Dye</span><i></i><span>Reveal</span></div><button class="button primary game-intro-button" id="start-game">Let’s play ${icon("arrow")}</button><p class="game-intro-note">Everything stays a secret until the big reveal.</p></div></section>`
+    : ""
+}
 <header class="header"><a class="brand" href="#" aria-label="A little secret home"><span class="brand-flower">✳</span><span>a little secret<span class="brand-dot">.</span></span></a><nav aria-label="Main navigation"><button class="nav-link active" id="studio-nav" aria-label="The dye studio">${icon("shirt")} <span class="nav-desktop">The dye studio</span><span class="nav-mobile">Studio</span></button><button class="nav-link" id="gallery-nav" aria-label="The clothesline">${icon("line")} <span class="nav-desktop">The clothesline</span><span class="nav-mobile">Clothesline</span> <span class="count" id="gallery-count">0</span></button></nav><span class="header-note">THE CLARK FAMILY · EST. 2021 ${icon("heart")}</span></header>
 <main>
 <section id="studio-view">
@@ -65,6 +70,25 @@ $("#app").innerHTML = `
 <div id="toast" role="status" aria-live="polite"></div>
 <dialog id="reset-dialog"><form method="dialog"><span class="dialog-flower">✳</span><h2>A fresh little start?</h2><p>Your current shirt will be cleared. Download it or hang it up first if you want to keep it.</p><div class="dialog-actions"><button value="cancel" class="button secondary">Keep this shirt</button><button value="reset" class="button primary">Start fresh ${icon("arrow")}</button></div></form></dialog>
 <dialog id="spoiler-dialog"><form method="dialog"><span class="dialog-flower">♡</span><h2>There’s a secret on the line.</h2><p>The finished shirts give away the surprise. Make your own first, or peek if you’re ready!</p><div class="dialog-actions"><button value="cancel" class="button primary">Make my shirt</button><button value="peek" class="button secondary">Take a peek</button></div></form></dialog>`;
+const gameIntro = $("#game-intro");
+if (gameIntro) {
+  document.body.classList.add("intro-open");
+  $(".header").inert = true;
+  $("main").inert = true;
+  $("#start-game").onclick = () => {
+    gameIntro.classList.add("leaving");
+    document.body.classList.remove("intro-open");
+    $(".header").inert = false;
+    $("main").inert = false;
+    const finishIntro = () => {
+      gameIntro.remove();
+      resize();
+      $("#next-button")?.focus({ preventScroll: true });
+    };
+    if (reduced.matches) finishIntro();
+    else setTimeout(finishIntro, 420);
+  };
+}
 try {
   renderer = new ShirtRenderer($("#shirt-canvas"));
 } catch (error) {

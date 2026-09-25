@@ -367,6 +367,21 @@ test("v2 uses a full-screen mobile game stage while preserving the game flow", a
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/?ui=v2");
   await expect(page.locator("body")).toHaveClass(/ui-v2/);
+  const intro = page.getByRole("dialog", {
+    name: "The Clark family is expecting another blessing in 2027.",
+  });
+  await expect(intro).toBeVisible();
+  await expect(
+    intro.getByText("Let’s play a game to find out what we’re having!"),
+  ).toBeVisible();
+  const introBox = await intro.locator(".game-intro-card").boundingBox();
+  expect(introBox.y).toBeGreaterThanOrEqual(0);
+  expect(introBox.y + introBox.height).toBeLessThanOrEqual(844);
+  expect(
+    await page.evaluate(() => document.documentElement.scrollHeight),
+  ).toBeLessThanOrEqual(844);
+  await intro.getByRole("button", { name: "Let’s play" }).click();
+  await expect(intro).toBeHidden();
   const stage = await page.locator(".workbench").boundingBox();
   const shirt = await page.locator("#shirt-canvas").boundingBox();
   const tray = await page.locator(".controls").boundingBox();
@@ -390,5 +405,29 @@ test("v2 uses a full-screen mobile game stage while preserving the game flow", a
   await page.getByRole("button", { name: "Unfold the surprise" }).click();
   await expect(
     page.getByRole("heading", { name: "It’s a girl!" }),
+  ).toBeVisible();
+});
+
+test("v2 intro fits a short phone without scrolling", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto("/?ui=v2");
+  const intro = page.getByRole("dialog", {
+    name: "The Clark family is expecting another blessing in 2027.",
+  });
+  const card = await intro.locator(".game-intro-card").boundingBox();
+  expect(card.x).toBeGreaterThanOrEqual(0);
+  expect(card.x + card.width).toBeLessThanOrEqual(375);
+  expect(card.y).toBeGreaterThanOrEqual(0);
+  expect(card.y + card.height).toBeLessThanOrEqual(667);
+  expect(
+    await page.evaluate(() => document.documentElement.scrollHeight),
+  ).toBeLessThanOrEqual(667);
+  await page.screenshot({
+    path: "/tmp/little-secret-v2-intro.png",
+    fullPage: true,
+  });
+  await page.getByRole("button", { name: "Let’s play" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Choose your fold." }),
   ).toBeVisible();
 });
