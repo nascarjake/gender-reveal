@@ -672,10 +672,20 @@ async function hangShirt() {
 }
 async function refreshCount() {
   try {
-    $("#gallery-count").textContent = (await getEntries()).length;
+    const entries = await getEntries();
+    $("#gallery-count").textContent = entries.length;
+    // The edition is a friendly clothesline number, not a database ID. Only
+    // hydrate the very first blank shirt so a completed tee never renumbers.
+    if (!saved && shirtNumber === 1) {
+      shirtNumber = Math.max(1, entries.length + 1);
+      updateEdition();
+    }
   } catch {
     /* Gallery errors are displayed in its full view. */
   }
+}
+function updateEdition() {
+  $("#edition").textContent = `NO. ${String(shirtNumber).padStart(3, "0")}`;
 }
 function showStudio() {
   view = "studio";
@@ -703,7 +713,7 @@ function resetShirt() {
   selectedSticker = null;
   finishTab = "decorate";
   $("#reveal-badge").hidden = true;
-  $("#edition").textContent = `NO. ${String(shirtNumber).padStart(3, "0")}`;
+  updateEdition();
   $(".workbench").classList.remove("revealed", "pink", "blue");
   $("#bench-hint").textContent = "Your blank canvas. So many possibilities.";
   setCanvasLabel("Your shirt. Choose a fold to get started.");

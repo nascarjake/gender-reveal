@@ -98,11 +98,15 @@ test("complete game: WebGL, reveal, customization, download, gallery persistence
     page.getByRole("heading", { name: "Sunshine & love" }),
   ).toBeVisible();
   await expect(page.getByText("Made by Auntie Test")).toBeVisible();
+  const edition = await page.locator("#edition").textContent();
+  const nextEdition = Number(edition.match(/\d+/)[0]) + 1;
   await page.getByRole("button", { name: "Make another shirt" }).click();
   await expect(
     page.getByRole("heading", { name: "Choose your fold." }),
   ).toBeVisible();
-  await expect(page.locator("#edition")).toHaveText("NO. 002");
+  await expect(page.locator("#edition")).toHaveText(
+    `NO. ${String(nextEdition).padStart(3, "0")}`,
+  );
   await page.reload();
   await page.getByRole("button", { name: /The clothesline/ }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
@@ -111,6 +115,26 @@ test("complete game: WebGL, reveal, customization, download, gallery persistence
     page.getByRole("heading", { name: "Sunshine & love" }),
   ).toBeVisible();
   expect(errors).toEqual([]);
+});
+test("a blank shirt uses the next clothesline number", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      "little-secret-gallery-v1-pink",
+      JSON.stringify(
+        ["a", "b", "c"].map((id) => ({
+          id,
+          image: "data:image/png;base64,AA==",
+          name: "Family",
+          title: "A little masterpiece",
+        })),
+      ),
+    );
+  });
+  await page.goto("/?ui=v1");
+  await expect(page.locator("#gallery-count")).toHaveText("3");
+  await expect(page.locator("#edition")).toHaveText("NO. 004");
 });
 test("the dye map accepts 800 splashes without increasing shader work", async ({
   page,
