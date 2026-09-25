@@ -2339,6 +2339,54 @@ body[data-step="4"] .secret-note {
     display: none;
   }
 }
+
+.full-game-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px 15px;
+  border: 1px solid #b9c9a6;
+  border-radius: 14px;
+  color: #304d37;
+  background: linear-gradient(135deg, #edf5dd, #fff0c9);
+  text-decoration: none;
+  box-shadow: 0 3px 0 #c8d5a7;
+}
+.full-game-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 #b8c998;
+}
+.full-game-link span,
+.full-game-link strong,
+.full-game-link small {
+  display: block;
+}
+.full-game-link strong {
+  font-size: 13px;
+}
+.full-game-link small {
+  margin-top: 2px;
+  color: #6d7568;
+  font-size: 12px;
+}
+.full-game-link svg {
+  width: 18px;
+  flex: 0 0 18px;
+}
+
+@media (max-width: 900px) {
+  .full-game-link {
+    padding: 9px 12px;
+  }
+  .full-game-link strong {
+    font-size: 12px;
+  }
+  .full-game-link small {
+    font-size: 11px;
+  }
+}
 .nav-mobile {
   display: none;
 }
@@ -3279,5 +3327,37 @@ body.ui-v2:not(.gallery-open) {
     border-radius: 24px 0 0 24px;
     border-top: 0;
     border-left: 2px solid white;
+  }
+}
+
+@media (max-width: 900px) {
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] .full-game-link {
+    min-height: 18px;
+    margin-top: 0;
+    padding: 1px 4px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] .full-game-link strong,
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] .full-game-link small {
+    display: inline;
+    font-size: 10px;
+  }
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] .full-game-link small::before {
+    content: " · ";
+  }
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] .full-game-link svg {
+    width: 12px;
+    flex-basis: 12px;
+  }
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] .make-another-inline {
+    min-height: 26px;
+    margin-top: 2px;
+    font-size: 11px;
+  }
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] > .button-caption {
+    display: none;
   }
 }

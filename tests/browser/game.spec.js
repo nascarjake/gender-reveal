@@ -78,6 +78,9 @@ test("complete game: WebGL, reveal, customization, download, gallery persistence
     .click();
   await expect(page.locator(".placed-sticker")).toHaveCount(2);
   await page.getByRole("button", { name: "Save & share", exact: true }).click();
+  await expect(
+    page.getByRole("link", { name: /Wanna build more tie-dye/ }),
+  ).toHaveAttribute("href", "https://nascarjake.github.io/tie-dye-studio/");
   await page.getByLabel("Made by").fill("Auntie Test");
   await page.getByLabel("Give your tee a name").fill("Sunshine & love");
   await page.screenshot({
