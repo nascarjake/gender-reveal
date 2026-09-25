@@ -49,8 +49,8 @@ $("#app").innerHTML = `
 <section id="studio-view">
 <div class="intro"><div><p class="eyebrow">THE CLARK FAMILY · EST. 2021</p><h1>Something little. <br>Something <em>lovely.</em></h1><p class="intro-copy">Make a tie-dye tee. Unfold a little secret. <br>A little hello to the newest member of the Clark family.</p></div><div class="intro-stamp"><span>OH, BABY!</span><strong>Made<br>with love</strong><span>ONE TINY TEE AT A TIME</span></div></div>
 <div class="workspace">
-<section class="workbench" aria-label="Interactive tie-dye workspace"><div class="bench-top"><span class="bench-label"><span class="status-dot"></span> YOUR LITTLE MASTERPIECE</span><span id="edition">NO. 001</span></div><div class="canvas-wrap"><canvas id="shirt-canvas" width="1100" height="1000" tabindex="0" role="img" aria-label="Your shirt. Choose a fold to get started."></canvas><div id="sticker-layer" aria-label="Stickers on your shirt"></div><span class="side-note">a little messy is a little magic</span><div class="reveal-badge" id="reveal-badge" hidden><span id="reveal-kicker"></span><strong id="reveal-title"></strong></div><div class="canvas-error" id="canvas-error" hidden><strong>Let’s get the studio ready.</strong><p>This game needs WebGL. Try a browser with hardware acceleration enabled.</p></div></div><div class="bench-bottom"><span id="bench-hint">Your blank canvas. So many possibilities.</span><button class="text-button" id="reset-button">${icon("reset")} Start over</button></div></section>
-<aside class="controls"><ol class="steps" aria-label="Your progress"><li class="active"><span>1</span>Fold</li><li><span>2</span>Tie</li><li><span>3</span>Dye</li><li><span>4</span>Reveal</li></ol><div id="step-content"></div><div class="secret-note">${icon("heart")}<p>A little secret, kept under wraps.<br><span>Everything stays gray until the big reveal.</span></p></div></aside>
+<section class="workbench" aria-label="Interactive tie-dye workspace"><div class="bench-top"><span class="bench-label"><span class="status-dot"></span><span id="bench-label-text">CHOOSE YOUR FOLD</span></span><span id="edition">NO. 001</span></div><div class="canvas-wrap"><canvas id="shirt-canvas" width="1100" height="1000" tabindex="0" role="img" aria-label="Your shirt. Choose a fold to get started."></canvas><div id="sticker-layer" aria-label="Stickers on your shirt"></div><span class="side-note">a little messy is a little magic</span><div class="reveal-badge" id="reveal-badge" hidden><span id="reveal-kicker"></span><strong id="reveal-title"></strong></div><div class="canvas-error" id="canvas-error" hidden><strong>Let’s get the studio ready.</strong><p>This game needs WebGL. Try a browser with hardware acceleration enabled.</p></div></div><div class="bench-bottom"><span id="bench-hint">Your blank canvas. So many possibilities.</span><button class="text-button" id="reset-button">${icon("reset")} Start over</button></div></section>
+<aside class="controls"><div class="quest-status"><div class="quest-status-copy"><span>YOUR TIE-DYE QUEST</span><strong id="quest-progress-copy">LEVEL 1 OF 4</strong></div><div class="quest-meter" role="progressbar" aria-label="Tie-dye quest progress" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1"><span id="quest-meter-fill"></span></div></div><ol class="steps" aria-label="Your progress"><li class="active"><span>1</span>Fold</li><li><span>2</span>Tie</li><li><span>3</span>Dye</li><li><span>4</span>Reveal</li></ol><div id="step-content"></div><div class="secret-note">${icon("heart")}<p>A little secret, kept under wraps.<br><span>Everything stays gray until the big reveal.</span></p></div></aside>
 </div>
 <div class="under-workspace"><span>NO TWO SHIRTS ALIKE. JUST LIKE NO LOVE QUITE LIKE THIS.</span><span>Fold it. Dye it. Feel all the feelings. <span class="tiny-flower">✳</span></span></div>
 </section>
@@ -124,12 +124,25 @@ function animate(targetFold, targetReveal, duration = 750, onDone) {
   animationFrame = requestAnimationFrame(tick);
 }
 function updateSteps() {
+  const visibleStep = Math.min(step, 3);
+  const levels = [
+    "CHOOSE YOUR FOLD",
+    "PLACE THREE BANDS",
+    "ADD YOUR DYE",
+    "READY TO REVEAL",
+    "MASTERPIECE COMPLETE",
+  ];
   document.querySelectorAll(".steps li").forEach((el, i) => {
-    el.classList.toggle("active", i === Math.min(step, 3));
+    el.classList.toggle("active", i === visibleStep);
     el.classList.toggle("done", i < step);
-    if (i === Math.min(step, 3)) el.setAttribute("aria-current", "step");
+    if (i === visibleStep) el.setAttribute("aria-current", "step");
     else el.removeAttribute("aria-current");
   });
+  $("#quest-progress-copy").textContent =
+    step > 3 ? "QUEST COMPLETE" : `LEVEL ${step + 1} OF 4`;
+  $(".quest-meter").setAttribute("aria-valuenow", String(Math.min(step + 1, 4)));
+  $("#quest-meter-fill").style.width = `${step > 3 ? 100 : (step + 1) * 25}%`;
+  $("#bench-label-text").textContent = levels[Math.min(step, 4)];
 }
 function setCanvasLabel(text) {
   $("#shirt-canvas").setAttribute("aria-label", text);
@@ -140,7 +153,7 @@ function renderStep() {
   $("#reset-button").disabled = animating || saving;
   const content = $("#step-content");
   if (step === 0) {
-    content.innerHTML = `<p class="step-kicker">STEP 01 · MAKE IT YOURS</p><h2>Let’s roll with it.</h2><p class="step-description">Every fold has a little personality. <br>Which one feels like you?</p><div class="fold-options">${FOLDS.map((f, i) => `<button class="fold-option ${shirt.fold === i ? "selected" : ""}" data-fold="${i}" aria-pressed="${shirt.fold === i}"><span class="fold-symbol fold-${i}" aria-hidden="true">${f.symbol}</span><span><strong>${f.short}</strong><small>${f.description}</small></span><span class="radio-dot"></span></button>`).join("")}</div><button id="next-button" class="button primary">Fold my shirt ${icon("arrow")}</button><p class="button-caption">No wrong choices. Only happy accidents.</p>`;
+    content.innerHTML = `<p class="step-kicker">LEVEL 1 · PICK A FOLD</p><h2>Choose your fold.</h2><p class="step-description">Every fold makes a different pattern. Pick the one that feels like you.</p><div class="fold-options">${FOLDS.map((f, i) => `<button class="fold-option ${shirt.fold === i ? "selected" : ""}" data-fold="${i}" aria-pressed="${shirt.fold === i}"><span class="fold-symbol fold-${i}" aria-hidden="true">${f.symbol}</span><span><strong>${f.short}</strong><small>${f.description}</small></span><span class="radio-dot"></span></button>`).join("")}</div><button id="next-button" class="button primary">Fold my shirt ${icon("arrow")}</button><p class="button-caption">No wrong choices. Every pattern is one of a kind.</p>`;
     content.querySelectorAll("[data-fold]").forEach((button) =>
       button.addEventListener("click", () => {
         shirt.fold = Number(button.dataset.fold);
@@ -161,7 +174,7 @@ function renderStep() {
       );
     };
   } else if (step === 1) {
-    content.innerHTML = `<p class="step-kicker">STEP 02 · HOLD IT TOGETHER</p><h2>All tied up.</h2><p class="step-description">Drag a band onto your shirt, or tap “Add a rubber band.” Three makes it snug!</p><div class="band-visual" aria-label="${shirt.bands} of 3 rubber bands added">${[0, 1, 2].map((i) => `<button class="band-pick ${i < shirt.bands ? "used" : ""}" aria-label="Rubber band ${i + 1}. Drag to the shirt or tap to add." ${i < shirt.bands || animating ? "disabled" : ""}><span class="rubber-band"></span></button>`).join("")}<span class="band-count" aria-live="polite">${shirt.bands} of 3</span></div><div class="easy-actions"><button class="button secondary" id="add-band" ${shirt.bands >= 3 || animating ? "disabled" : ""}>${shirt.bands >= 3 ? "All snug and ready!" : `Add a rubber band · ${shirt.bands}/3`}</button><button class="button secondary" id="undo-band" ${!shirt.bands ? "disabled" : ""} aria-label="Undo last rubber band">Undo</button></div><button class="button primary" id="next-button" ${canAdvance(step, shirt) ? "" : "disabled"}>Bring on the dye ${icon("arrow")}</button>`;
+    content.innerHTML = `<p class="step-kicker">LEVEL 2 · TIE IT TIGHT</p><h2>Place three bands.</h2><p class="step-description">Drag each band onto the shirt. For an easier option, tap the button below.</p><div class="band-visual" aria-label="${shirt.bands} of 3 rubber bands added">${[0, 1, 2].map((i) => `<button class="band-pick ${i < shirt.bands ? "used" : ""}" aria-label="Rubber band ${i + 1}. Drag to the shirt or tap to add." ${i < shirt.bands || animating ? "disabled" : ""}><span class="rubber-band"></span></button>`).join("")}<span class="band-count" aria-live="polite">${shirt.bands} of 3</span></div><div class="easy-actions"><button class="button secondary" id="add-band" ${shirt.bands >= 3 || animating ? "disabled" : ""}>${shirt.bands >= 3 ? "All snug and ready!" : `Add a rubber band · ${shirt.bands}/3`}</button><button class="button secondary" id="undo-band" ${!shirt.bands ? "disabled" : ""} aria-label="Undo last rubber band">Undo</button></div><button class="button primary" id="next-button" ${canAdvance(step, shirt) ? "" : "disabled"}>Bring on the dye ${icon("arrow")}</button>`;
     $("#add-band").onclick = () => tieBand();
     $("#undo-band").onclick = () => {
       shirt.bandPlacements.pop();
@@ -181,7 +194,7 @@ function renderStep() {
       );
     };
   } else if (step === 2) {
-    content.innerHTML = `<p class="step-kicker">STEP 03 · A HAPPY LITTLE MESS</p><h2>A splash of mystery.</h2><p class="step-description">Pick a secret shade, then squirt it onto your shirt. Where it lands changes everything.</p><div class="dye-bottles" role="group" aria-label="Secret dye shade">${["Soft", "Medium", "Deep"].map((label, i) => `<button class="dye-choice ${shade === i ? "selected" : ""}" data-shade="${i}" aria-pressed="${shade === i}" aria-label="${label} dye"><span class="bottle bottle-${i}"><span class="bottle-mark">${["Ⅰ", "Ⅱ", "Ⅲ"][i]}</span></span><strong>${label}</strong></button>`).join("")}</div><button class="button secondary easy-dye" id="help-dye">Add a few splashes for me ✧</button><div class="dye-progress"><span id="drop-count">${shirt.drops.length} little splashes</span><button class="text-button" id="undo-dye" ${!shirt.drops.length ? "disabled" : ""}>Undo</button></div><button class="button primary" id="next-button" ${canAdvance(step, shirt) ? "" : "disabled"}>Ready for the surprise ${icon("arrow")}</button><p class="button-caption" id="dye-caption">${shirt.drops.length < 3 ? "Add at least 3 splashes. Make it wonderfully you." : "A little white space makes a lovely pattern, too."}</p><p class="keyboard-help">Keyboard: arrow keys to aim, Space to squirt.</p>`;
+    content.innerHTML = `<p class="step-kicker">LEVEL 3 · ADD THE DYE</p><h2>Make a little mess.</h2><p class="step-description">Choose a secret shade, then tap or drag on the shirt. Every splash changes the pattern.</p><div class="dye-bottles" role="group" aria-label="Secret dye shade">${["Soft", "Medium", "Deep"].map((label, i) => `<button class="dye-choice ${shade === i ? "selected" : ""}" data-shade="${i}" aria-pressed="${shade === i}" aria-label="${label} dye"><span class="bottle bottle-${i}"><span class="bottle-mark">${["Ⅰ", "Ⅱ", "Ⅲ"][i]}</span></span><strong>${label}</strong></button>`).join("")}</div><button class="button secondary easy-dye" id="help-dye">Add a few splashes for me ✧</button><div class="dye-progress"><span id="drop-count">${shirt.drops.length} little splashes</span><button class="text-button" id="undo-dye" ${!shirt.drops.length ? "disabled" : ""}>Undo</button></div><button class="button primary" id="next-button" ${canAdvance(step, shirt) ? "" : "disabled"}>Ready for the surprise ${icon("arrow")}</button><p class="button-caption" id="dye-caption">${shirt.drops.length < 3 ? "Add at least 3 splashes. Make it wonderfully you." : "A little white space makes a lovely pattern, too."}</p><p class="keyboard-help">Keyboard: arrow keys to aim, Space to squirt.</p>`;
     content.querySelectorAll("[data-shade]").forEach(
       (b) =>
         (b.onclick = () => {
@@ -212,7 +225,7 @@ function renderStep() {
       $("#bench-hint").textContent = "A tiny shirt. A very big moment.";
     };
   } else if (step === 3) {
-    content.innerHTML = `<p class="step-kicker">STEP 04 · THE BIG LITTLE MOMENT</p><h2>Ready, little love?</h2><p class="step-description">Your masterpiece has been keeping a secret. It’s time to let it unfold.</p><div class="reveal-heart">♡<span>made with<br>so much love</span></div>${demo ? '<p class="demo-note">You’re in the demo studio. This is a sample reveal.</p>' : ""}<button class="button primary reveal-button" id="reveal-button">Unfold the surprise ${icon("heart")}</button><p class="button-caption">Gather your favorite people. Take a little breath.</p>`;
+    content.innerHTML = `<p class="step-kicker">FINAL LEVEL · THE BIG REVEAL</p><h2>Ready, little love?</h2><p class="step-description">Your shirt is finished, and it has been keeping a very special secret.</p><div class="final-level-card"><span class="mystery-token" aria-hidden="true">?</span><span><strong>Secret ready!</strong><small>Bring everyone close, then reveal together.</small></span><span class="level-check" aria-hidden="true">✓</span></div>${demo ? '<p class="demo-note">You’re in the demo studio. This is a sample reveal.</p>' : ""}<button class="button primary reveal-button" id="reveal-button">Unfold the surprise ${icon("arrow")}</button><p class="button-caption">Take a breath. This is the big moment.</p>`;
     $("#reveal-button").onclick = performReveal;
   } else {
     renderFinish(content);
@@ -226,7 +239,7 @@ function renderStep() {
 }
 function renderFinish(content) {
   const selected = shirt.stickers.find((s) => s.id === selectedSticker);
-  content.innerHTML = `<div class="finish-heading"><p class="step-kicker">${demo ? "PRACTICE MAKES LOVELY" : "THE CLARK FAMILY IS GROWING"}</p><h2>${color === "pink" ? "It’s a girl!" : "It’s a boy!"}</h2><p class="step-description">${demo ? "A little practice, a whole lot of love." : "Our second little girl. Madison’s going to be a big sister!"}</p></div><div class="finish-tabs" role="tablist" aria-label="Finish your shirt"><button role="tab" id="decorate-tab" aria-controls="finish-panel" aria-selected="${finishTab === "decorate"}">1. Decorate</button><button role="tab" id="share-tab" aria-controls="finish-panel" aria-selected="${finishTab === "share"}">2. Save & share</button></div><div id="finish-panel" role="tabpanel" aria-labelledby="${finishTab === "decorate" ? "decorate-tab" : "share-tab"}"></div>`;
+  content.innerHTML = `<div class="finish-heading"><p class="step-kicker">${demo ? "QUEST COMPLETE · PRACTICE MAKES LOVELY" : "QUEST COMPLETE · THE CLARK FAMILY IS GROWING"}</p><h2>${color === "pink" ? "It’s a girl!" : "It’s a boy!"}</h2><p class="step-description">${demo ? "A little practice, a whole lot of love." : "Our second little girl. Madison’s going to be a big sister!"}</p></div><div class="finish-tabs" role="tablist" aria-label="Finish your shirt"><button role="tab" id="decorate-tab" aria-controls="finish-panel" aria-selected="${finishTab === "decorate"}">1. Decorate</button><button role="tab" id="share-tab" aria-controls="finish-panel" aria-selected="${finishTab === "share"}">2. Save & share</button></div><div id="finish-panel" role="tabpanel" aria-labelledby="${finishTab === "decorate" ? "decorate-tab" : "share-tab"}"></div>`;
   $("#decorate-tab").onclick = () => {
     finishTab = "decorate";
     renderStep();

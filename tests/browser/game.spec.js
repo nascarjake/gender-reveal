@@ -114,7 +114,7 @@ for (const fold of ["Accordion", "Scrunch"])
     await page.getByRole("button", { name: "Start over" }).click();
     await page.getByRole("button", { name: "Start fresh" }).click();
     await expect(
-      page.getByRole("heading", { name: "Let’s roll with it." }),
+      page.getByRole("heading", { name: "Choose your fold." }),
     ).toBeVisible();
   });
 test("mobile layout has no horizontal overflow and keyboard can finish dye step", async ({

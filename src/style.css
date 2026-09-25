@@ -322,6 +322,45 @@ h1 em {
   display: flex;
   flex-direction: column;
 }
+.quest-status {
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border: 1px solid #d9ddc9;
+  border-radius: 9px;
+  background: #eff1e4;
+}
+.quest-status-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 9px;
+  color: #687052;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+}
+.quest-status-copy strong {
+  color: var(--ink);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+.quest-meter {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #d9ddca;
+}
+.quest-meter span {
+  display: block;
+  width: 25%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--green);
+  box-shadow: inset 0 0 0 1px #bacf3b;
+  transition: width 0.35s ease;
+}
 .steps {
   list-style: none;
   display: flex;
@@ -472,9 +511,17 @@ h2 {
   background: var(--green);
   color: #344019;
   border-color: #c6dc49;
+  box-shadow: 0 4px 0 #abc42d;
+  margin-bottom: 4px;
 }
 .button.primary:hover:not(:disabled) {
   background: #c9e238;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #9eb728;
+}
+.button.primary:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #9eb728;
 }
 .button.primary svg:last-child {
   margin-left: auto;
@@ -682,20 +729,53 @@ footer > span:last-child {
   text-align: center;
   margin-top: 16px;
 }
-.reveal-heart {
-  font: 150px/0.95 Georgia;
-  text-align: center;
-  position: relative;
-  color: #919b7a;
-  margin: 25px 0 30px;
+.final-level-card {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0 26px;
+  padding: 16px;
+  border: 1px solid #cfd5b9;
+  border-radius: 10px;
+  background: #eff2df;
+  box-shadow: 0 5px 14px #363a2e0d;
 }
-.reveal-heart span {
-  font: italic 15px/1.3 Georgia;
-  color: #7b8468;
-  position: absolute;
-  left: 50%;
-  top: 44%;
-  transform: translate(-50%, -50%);
+.mystery-token {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--green);
+  color: #3b421f;
+  font: 700 25px/1 "Manrope", sans-serif;
+  box-shadow: inset 0 0 0 1px #bbcf43;
+}
+.final-level-card strong,
+.final-level-card small {
+  display: block;
+}
+.final-level-card strong {
+  margin-bottom: 4px;
+  font-size: 17px;
+  font-weight: 700;
+}
+.final-level-card small {
+  color: #68705b;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.level-check {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border: 1px solid #aeb990;
+  border-radius: 50%;
+  color: #667349;
+  font-size: 15px;
+  font-weight: 700;
 }
 .demo-note {
   font-size: 11px;
@@ -1659,7 +1739,7 @@ body[data-step="4"] .secret-note {
     flex-shrink: 0;
   }
   .nav-link {
-    font-size: 12px;
+    font-size: 14px;
     align-items: center;
     padding: 0;
     gap: 4px;
@@ -1668,7 +1748,7 @@ body[data-step="4"] .secret-note {
     display: none;
   }
   .nav-link .count {
-    font-size: 11px;
+    font-size: 12px;
     min-width: 18px;
     height: 18px;
   }
@@ -1694,7 +1774,7 @@ body[data-step="4"] .secret-note {
     flex: initial;
   }
   .intro .eyebrow {
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 1.3px;
     text-align: center;
     margin: 0;
@@ -1722,11 +1802,11 @@ body[data-step="4"] .secret-note {
     border-radius: 10px;
   }
   .bench-top {
-    height: 24px;
-    min-height: 24px;
-    font-size: 9px;
+    height: 28px;
+    min-height: 28px;
+    font-size: 12px;
     margin: 0 12px;
-    letter-spacing: 0.7px;
+    letter-spacing: 0.5px;
   }
   .bench-top #edition {
     display: none;
@@ -1739,15 +1819,15 @@ body[data-step="4"] .secret-note {
     display: none;
   }
   .bench-bottom {
-    min-height: 30px;
-    height: 30px;
+    min-height: 34px;
+    height: 34px;
     margin: 0 12px;
-    font-size: 11px;
+    font-size: 13px;
     gap: 8px;
   }
   .bench-bottom .text-button {
-    font-size: 12px;
-    min-height: 30px;
+    font-size: 13px;
+    min-height: 34px;
   }
   #bench-hint {
     max-width: 74%;
@@ -1762,20 +1842,36 @@ body[data-step="4"] .secret-note {
     overflow: hidden;
     padding: 0;
   }
+  .quest-status {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+  }
+  .quest-status-copy {
+    margin-bottom: 6px;
+    font-size: 12px;
+    letter-spacing: 0.65px;
+  }
+  .quest-status-copy strong {
+    font-size: 12px;
+  }
+  .quest-meter {
+    height: 6px;
+  }
   .steps {
-    flex: 0 0 34px;
+    flex: 0 0 39px;
     margin: 0 0 10px;
-    gap: 8px;
+    gap: 5px;
   }
   .steps li {
-    font-size: 12px;
-    padding: 0 0 9px;
-    gap: 6px;
+    font-size: 14px;
+    padding: 0 0 10px;
+    gap: 5px;
   }
   .steps li span {
-    height: 21px;
-    width: 21px;
-    font-size: 11px;
+    height: 24px;
+    width: 24px;
+    font-size: 13px;
   }
   #step-content {
     min-height: 0;
@@ -1795,13 +1891,13 @@ body[data-step="4"] .secret-note {
     display: none;
   }
   #step-content h2 {
-    font-size: 23px;
+    font-size: 25px;
     letter-spacing: -0.7px;
     margin: 0 0 5px;
   }
   .step-description {
-    font-size: 14px;
-    line-height: 1.45;
+    font-size: 16px;
+    line-height: 1.5;
     margin: 0 0 12px;
   }
   .step-description br {
@@ -1825,7 +1921,7 @@ body[data-step="4"] .secret-note {
     display: none;
   }
   .fold-option strong {
-    font-size: 13px;
+    font-size: 14px;
     margin: 0;
   }
   .fold-symbol {
@@ -1840,9 +1936,9 @@ body[data-step="4"] .secret-note {
     font-size: 30px;
   }
   .button {
-    min-height: 44px;
+    min-height: 48px;
     padding: 10px 12px;
-    font-size: 14px;
+    font-size: 15px;
     border-radius: 7px;
   }
   .band-visual {
@@ -1859,7 +1955,7 @@ body[data-step="4"] .secret-note {
     width: 40px;
   }
   .band-count {
-    font-size: 13px;
+    font-size: 14px;
   }
   .easy-actions {
     margin-bottom: 8px;
@@ -1878,7 +1974,7 @@ body[data-step="4"] .secret-note {
     min-height: 68px;
   }
   .dye-choice strong {
-    font-size: 13px;
+    font-size: 14px;
   }
   .bottle {
     width: 25px;
@@ -1909,18 +2005,28 @@ body[data-step="4"] .secret-note {
   }
   .dye-progress {
     margin: 3px 0 8px;
-    font-size: 12px;
+    font-size: 14px;
   }
   .dye-progress .text-button {
-    font-size: 13px;
+    font-size: 14px;
     min-height: 32px;
   }
-  .reveal-heart {
-    font-size: 88px;
-    margin: 8px 0 12px;
+  .final-level-card {
+    grid-template-columns: 46px 1fr auto;
+    gap: 11px;
+    margin: 14px 0 18px;
+    padding: 13px;
   }
-  .reveal-heart span {
-    font-size: 12px;
+  .mystery-token {
+    width: 46px;
+    height: 46px;
+    font-size: 22px;
+  }
+  .final-level-card strong {
+    font-size: 16px;
+  }
+  .final-level-card small {
+    font-size: 14px;
   }
   .reveal-badge {
     bottom: -4px;
@@ -1937,7 +2043,7 @@ body[data-step="4"] .secret-note {
   }
   .finish-heading .step-description {
     margin-bottom: 5px;
-    font-size: 13px;
+    font-size: 16px;
   }
   .finish-tabs {
     margin-bottom: 9px;
@@ -1946,7 +2052,7 @@ body[data-step="4"] .secret-note {
   .finish-tabs button {
     padding: 6px 0;
     min-height: 36px;
-    font-size: 13px;
+    font-size: 14px;
   }
   .sticker-palette {
     gap: 5px;
@@ -1960,12 +2066,12 @@ body[data-step="4"] .secret-note {
     font-size: 26px;
   }
   .random-stickers {
-    font-size: 11px;
+    font-size: 13px;
     padding: 5px;
     min-height: 42px;
   }
   .editor-instruction {
-    font-size: 12px;
+    font-size: 14px;
     margin: 7px 0;
     line-height: 1.4;
   }
@@ -1974,7 +2080,7 @@ body[data-step="4"] .secret-note {
     margin: 4px 0 9px;
   }
   .sticker-tools.empty {
-    font-size: 13px;
+    font-size: 14px;
     min-height: 65px;
   }
   .size-control {
@@ -2000,7 +2106,7 @@ body[data-step="4"] .secret-note {
   }
   .name-fields .input-label {
     margin-top: 8px;
-    font-size: 13px;
+    font-size: 14px;
   }
   .name-fields input {
     height: 42px;
@@ -2024,13 +2130,13 @@ body[data-step="4"] .secret-note {
     gap: 9px;
   }
   .nav-link {
-    font-size: 11px;
+    font-size: 12px;
   }
   .header {
     padding: 0 10px;
   }
   .random-stickers {
-    font-size: 10px;
+    font-size: 12px;
   }
   .sticker-palette {
     gap: 3px;
@@ -2065,7 +2171,7 @@ body[data-step="4"] .secret-note {
     font-size: 21px;
   }
   .step-description {
-    font-size: 13px;
+    font-size: 15px;
     margin-bottom: 7px;
   }
   .fold-options {
@@ -2078,7 +2184,7 @@ body[data-step="4"] .secret-note {
     min-height: 80px;
   }
   .finish-heading .step-description {
-    font-size: 12px;
+    font-size: 15px;
   }
 }
 @media (max-width: 900px) and (orientation: landscape) and (max-height: 550px) {
@@ -2100,7 +2206,7 @@ body[data-step="4"] .secret-note {
     padding-top: 8px;
   }
   .bench-top {
-    font-size: 8px;
+    font-size: 11px;
   }
   .bench-bottom #bench-hint {
     display: none;
