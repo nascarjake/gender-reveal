@@ -42,6 +42,7 @@ export const FOLDS = [
     symbol: "◌",
   },
 ];
+export const MAX_DROPS = 800;
 export const STICKERS = ["✿", "♡", "★", "☀", "✦", "☁"];
 export function createShirt() {
   return {
@@ -58,7 +59,7 @@ export function createShirt() {
 }
 export function addDrop(shirt, x, y, shade, size = 0.19, palette = 0) {
   if (
-    shirt.drops.length >= 64 ||
+    shirt.drops.length >= MAX_DROPS ||
     !Number.isFinite(x) ||
     !Number.isFinite(y) ||
     !Number.isFinite(shade) ||

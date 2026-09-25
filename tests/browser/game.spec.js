@@ -112,6 +112,36 @@ test("complete game: WebGL, reveal, customization, download, gallery persistence
   ).toBeVisible();
   expect(errors).toEqual([]);
 });
+test("the dye map accepts 800 splashes without increasing shader work", async ({
+  page,
+}) => {
+  await makeShirt(page);
+  const canvas = page.locator("#shirt-canvas");
+  const elapsed = await canvas.evaluate((element) => {
+    // The regular pointer path is intentional: it exercises the same UI and
+    // WebGL upload work a guest uses, without making this test wait for 800
+    // individual automation round trips.
+    element.setPointerCapture = () => {};
+    const bounds = element.getBoundingClientRect();
+    const start = performance.now();
+    for (let index = 0; index < 800; index++) {
+      const angle = index * 2.399963229728653;
+      const radius = 0.06 + ((index % 11) / 11) * 0.18;
+      element.dispatchEvent(
+        new PointerEvent("pointerdown", {
+          bubbles: true,
+          pointerId: index + 1,
+          clientX: bounds.left + bounds.width * (0.5 + Math.cos(angle) * radius),
+          clientY: bounds.top + bounds.height * (0.5 + Math.sin(angle) * radius),
+        }),
+      );
+    }
+    return performance.now() - start;
+  });
+  await expect(page.locator("#drop-count")).toHaveText("800 little splashes");
+  expect(elapsed).toBeLessThan(8000);
+  await expect(page.getByRole("button", { name: "Ready for the surprise" })).toBeEnabled();
+});
 for (const fold of ["Accordion", "Scrunch"])
   test(`${fold}: tie, dye, undo, reveal and reset`, async ({ page }) => {
     await makeShirt(page, fold);

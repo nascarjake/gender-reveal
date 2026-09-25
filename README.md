@@ -41,7 +41,7 @@ Reference: [Custom workflows for GitHub Pages](https://docs.github.com/en/pages/
 
 ## Shared clothesline
 
-The deployed Cloudflare Worker uses the D1 database configured in `worker/wrangler.jsonc`. It stores bounded PNG snapshots with the optional name and title. Images load lazily as guests browse the clothesline.
+The deployed Cloudflare Worker uses the D1 database configured in `worker/wrangler.jsonc`. It stores bounded PNG snapshots with the optional name and title. Each shirt supports up to 800 dye splashes in the browser; only the final 420px PNG snapshot is stored when a guest chooses to share. Images load lazily as guests browse the clothesline.
 
 To run locally:
 

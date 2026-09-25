@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   FOLDS,
+  MAX_DROPS,
   createShirt,
   addDrop,
   canAdvance,
@@ -32,8 +33,8 @@ test("dye data stays inside shader limits and records placement and shades", () 
   assert.deepEqual(mixed.drops[0], [-0.2, 0.4, 4, 0.08]);
   assert.equal(addDrop(shirt, NaN, 0, 0), false);
   assert.equal(addDrop(shirt, 0, 0, 0, 0.1, NaN), false);
-  for (let i = 0; i < 80; i++) addDrop(shirt, 8, -8, 9);
-  assert.equal(shirt.drops.length, 64);
+  for (let i = 0; i < MAX_DROPS + 16; i++) addDrop(shirt, 8, -8, 9);
+  assert.equal(shirt.drops.length, MAX_DROPS);
   assert.deepEqual(shirt.drops[1], [1, -1, 2, 0.19]);
 });
 test("gallery accepts bounded PNG data and rejects unsafe or oversized content", () => {

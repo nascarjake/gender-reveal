@@ -4,10 +4,9 @@ precision highp float;
 varying vec2 vUv;
 uniform vec2 uResolution;
 uniform float uFolded,uReveal,uSeed,uFold,uBands;
-uniform int uCount;
-uniform vec4 uDrops[64];
 uniform vec3 uColor,uAccentColor;
 uniform vec2 uBandLines[3];
+uniform sampler2D uDyeMap;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7))+uSeed)*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
 float fbm(vec2 p){return .57*noise(p)+.28*noise(p*2.03)+.15*noise(p*4.01);}
@@ -46,10 +45,10 @@ void main(){
  float shadow=(1.-smoothstep(-.01,.065,mix(shirt(p-vec2(.018,-.034)),bundle(p-vec2(.018,-.034)),uFolded)))*.14;
  vec2 dyeP=mix(p,foldedPoint(p),1.-uFolded);
  dyeP+=(vec2(fbm(p*32.),fbm(p*37.+10.))-.5)*.038;
- float density=0.,tone=0.,accent=0.;
- for(int i=0;i<64;i++){if(i>=uCount)break;vec4 drop=uDrops[i];float d=length(dyeP-drop.xy);float ink=exp(-d*d/(drop.w*drop.w*.75));float palette=floor(drop.z/3.);float strength=mod(drop.z,3.);density+=ink;tone+=ink*(strength*.5);accent+=ink*palette;}
- tone/=max(.001,density);
- accent/=max(.001,density);
+ vec4 dyeData=texture2D(uDyeMap,clamp(dyeP*.5+.5,0.,1.));
+ float density=clamp(dyeData.a*3.2,0.,3.);
+ float tone=clamp((dyeData.r-.42)/.42,0.,1.);
+ float accent=clamp((dyeData.g-.25)/.62,0.,1.);
  float a=atan(p.y,p.x),r=length(p);
  float ridges=sin(r*83.+a*5.+fbm(p*22.)*10.);
  if(uFold>.5&&uFold<1.5)ridges=sin(p.x*91.+fbm(p*22.)*10.);
@@ -123,12 +122,90 @@ export class ShirtRenderer {
         "uFold",
         "uBands",
         "uBandLines[0]",
-        "uCount",
-        "uDrops[0]",
         "uColor",
         "uAccentColor",
+        "uDyeMap",
       ].map((n) => [n, gl.getUniformLocation(this.program, n)]),
     );
+    this.dyeMapSize = 512;
+    this.dyeCanvas = document.createElement("canvas");
+    this.dyeCanvas.width = this.dyeMapSize;
+    this.dyeCanvas.height = this.dyeMapSize;
+    this.dyeContext = this.dyeCanvas.getContext("2d");
+    this.dyeTexture = gl.createTexture();
+    this.dyeShirtId = null;
+    this.paintedDrops = 0;
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, this.dyeTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      this.dyeCanvas,
+    );
+  }
+  drawDyeDrop(drop) {
+    const [x, y, encodedShade, size] = drop,
+      context = this.dyeContext,
+      mapSize = this.dyeMapSize,
+      shade = encodedShade % 3,
+      palette = Math.floor(encodedShade / 3),
+      centerX = (x * 0.5 + 0.5) * mapSize,
+      centerY = (0.5 - y * 0.5) * mapSize,
+      radius = Math.max(7, size * mapSize * 0.92),
+      red = 112 + shade * 54,
+      green = palette ? 220 : 62,
+      gradient = context.createRadialGradient(
+        centerX,
+        centerY,
+        0,
+        centerX,
+        centerY,
+        radius,
+      );
+    gradient.addColorStop(0, `rgba(${red}, ${green}, 38, 0.42)`);
+    gradient.addColorStop(0.38, `rgba(${red}, ${green}, 38, 0.24)`);
+    gradient.addColorStop(0.74, `rgba(${red}, ${green}, 38, 0.065)`);
+    gradient.addColorStop(1, `rgba(${red}, ${green}, 38, 0)`);
+    context.globalCompositeOperation = "lighter";
+    context.fillStyle = gradient;
+    context.fillRect(
+      centerX - radius,
+      centerY - radius,
+      radius * 2,
+      radius * 2,
+    );
+  }
+  syncDyeMap(shirt) {
+    const gl = this.gl;
+    if (this.dyeShirtId !== shirt.id || shirt.drops.length < this.paintedDrops) {
+      this.dyeContext.clearRect(0, 0, this.dyeMapSize, this.dyeMapSize);
+      this.dyeShirtId = shirt.id;
+      this.paintedDrops = 0;
+    }
+    for (let index = this.paintedDrops; index < shirt.drops.length; index++)
+      this.drawDyeDrop(shirt.drops[index]);
+    if (this.paintedDrops !== shirt.drops.length) {
+      this.paintedDrops = shirt.drops.length;
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, this.dyeTexture);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        this.dyeCanvas,
+      );
+    }
   }
   draw(shirt, { folded = 0, reveal = 0, color = "blue" } = {}) {
     const gl = this.gl,
@@ -143,15 +220,15 @@ export class ShirtRenderer {
     gl.uniform1f(u.uSeed, shirt.seed);
     gl.uniform1f(u.uFold, shirt.fold);
     gl.uniform1f(u.uBands, shirt.bands);
+    this.syncDyeMap(shirt);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, this.dyeTexture);
+    gl.uniform1i(u.uDyeMap, 0);
     const bands = new Float32Array(6);
     shirt.bandPlacements.forEach((band, i) =>
       bands.set([band.angle, band.offset], i * 2),
     );
     gl.uniform2fv(u["uBandLines[0]"], bands);
-    gl.uniform1i(u.uCount, shirt.drops.length);
-    const drops = new Float32Array(256);
-    shirt.drops.forEach((d, i) => drops.set(d, i * 4));
-    gl.uniform4fv(u["uDrops[0]"], drops);
     gl.uniform3fv(
       u.uColor,
       color === "pink" ? [0.94, 0.26, 0.5] : [0.18, 0.49, 0.93],
