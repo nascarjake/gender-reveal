@@ -69,6 +69,14 @@ void main(){
   float pool=fbm(p*3.+vec2(fbm(p*1.6+3.),fbm(p*1.9-4.))*1.25);
   resist=mix(.52,1.,smoothstep(.28,.72,pool));
  }
+ float detailRidges=sin(r*83.+a*5.+fbm(p*22.)*10.);
+ if(uFold>.5&&uFold<1.5)detailRidges=sin(p.x*91.+fbm(p*22.)*10.);
+ if(uFold>1.5&&uFold<2.5)detailRidges=sin(fbm(p*12.)*45.);
+ if(uFold>2.5&&uFold<3.5)detailRidges=sin(a*14.+r*46.+fbm(p*15.)*8.);
+ if(uFold>3.5&&uFold<4.5)detailRidges=sin((p.x+p.y)*86.+fbm(p*18.)*9.);
+ if(uFold>4.5)detailRidges=sin(fbm(p*7.)*58.+r*16.);
+ float detailLine=1.-smoothstep(-.96,-.68,detailRidges);
+ resist*=1.-detailLine*.15;
  float tiedResist=1.;
  for(int i=0;i<3;i++){if(float(i)>=uBands)break;vec2 band=uBandLines[i];float d=abs(dot(dyeP,vec2(cos(band.x),sin(band.x)))-band.y);tiedResist*=mix(.32,1.,smoothstep(.008,.025,d));}
  float stain=clamp(density*.77,0.,1.)*mix(resist,.86,uFolded)*mix(tiedResist,1.,uFolded);
