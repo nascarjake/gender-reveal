@@ -15,7 +15,8 @@ import { getEntries, saveEntry, sharedGallery } from "./gallery.js";
 import { demo, color } from "./config.js";
 import { StickerEditor, paintStickers } from "./sticker-editor.js";
 const uiVersion = new URLSearchParams(window.location.search).get("ui");
-document.body.classList.toggle("ui-v2", uiVersion === "v2");
+const useV2 = uiVersion !== "v1";
+document.body.classList.toggle("ui-v2", useV2);
 let selectedSticker = null,
   finishTab = "decorate";
 let shirt = createShirt(),
@@ -51,7 +52,7 @@ function icon(name) {
 }
 $("#app").innerHTML = `
 ${
-  uiVersion === "v2"
+  useV2
     ? `<section class="game-intro" id="game-intro" role="dialog" aria-modal="true" aria-labelledby="game-intro-title"><div class="game-intro-sparkles" aria-hidden="true"><span>✦</span><span>●</span><span>✳</span><span>●</span><span>✦</span><span>●</span></div><div class="game-intro-card"><div class="game-intro-icon" aria-hidden="true">${icon("shirt")}</div><p class="game-intro-kicker">A LITTLE FAMILY UPDATE</p><h1 id="game-intro-title">The Clark family is expecting another blessing in 2027.</h1><p class="game-intro-copy">Let’s play a game to find out what we’re having!</p><div class="game-intro-levels" aria-label="Fold, tie, dye, and reveal"><span>Fold</span><i></i><span>Tie</span><i></i><span>Dye</span><i></i><span>Reveal</span></div><button class="button primary game-intro-button" id="start-game">Let’s play ${icon("arrow")}</button><p class="game-intro-note">Everything stays a secret until the big reveal.</p></div></section>`
     : ""
 }

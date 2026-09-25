@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 async function makeShirt(page, fold = "Spiral") {
-  await page.goto("/");
+  await page.goto("/?ui=v1");
   await page
     .getByRole("button", { name: new RegExp("^" + fold + " ") })
     .click();
@@ -132,7 +132,7 @@ test("mobile layout has no horizontal overflow and keyboard can finish dye step"
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
+  await page.goto("/?ui=v1");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -158,7 +158,7 @@ test("mobile layout has no horizontal overflow and keyboard can finish dye step"
   ).toBeEnabled();
 });
 test("initial studio visual", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/?ui=v1");
   await page.screenshot({
     path: "/tmp/little-secret-desktop.png",
     fullPage: true,
@@ -166,7 +166,7 @@ test("initial studio visual", async ({ page }) => {
 });
 
 async function revealWithButtons(page) {
-  await page.goto("/");
+  await page.goto("/?ui=v1");
   await expect(
     page.getByText("Madison’s going to be a big sister!", { exact: false }),
   ).toHaveCount(0);
@@ -195,7 +195,7 @@ async function drag(page, source, target) {
 test("rubber bands can be dragged onto fabric; misses do not add bands", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/?ui=v1");
   await page.getByRole("button", { name: "Fold my shirt" }).click();
   await expect(page.locator("#add-band")).toBeEnabled();
   const band = page.locator(".band-pick:not(:disabled)").first();
@@ -269,7 +269,7 @@ for (const viewport of [
     page,
   }) => {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await page.goto("/?ui=v1");
     async function inView(selector) {
       const box = await page.locator(selector).boundingBox();
       expect(box.y).toBeGreaterThanOrEqual(0);
@@ -324,7 +324,7 @@ test("touch drag places a band on a phone without scrolling the page", async ({
     reducedMotion: "reduce",
   });
   const page = await context.newPage();
-  await page.goto("http://127.0.0.1:5174/");
+  await page.goto("http://127.0.0.1:5174/?ui=v1");
   await page.getByRole("button", { name: "Fold my shirt" }).tap();
   await expect(page.locator("#add-band")).toBeEnabled();
   const band = await page
@@ -365,7 +365,7 @@ test("v2 uses a full-screen mobile game stage while preserving the game flow", a
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/?ui=v2");
+  await page.goto("/");
   await expect(page.locator("body")).toHaveClass(/ui-v2/);
   const intro = page.getByRole("dialog", {
     name: "The Clark family is expecting another blessing in 2027.",
@@ -410,7 +410,7 @@ test("v2 uses a full-screen mobile game stage while preserving the game flow", a
 
 test("v2 intro fits a short phone without scrolling", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
-  await page.goto("/?ui=v2");
+  await page.goto("/");
   const intro = page.getByRole("dialog", {
     name: "The Clark family is expecting another blessing in 2027.",
   });

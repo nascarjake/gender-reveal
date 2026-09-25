@@ -25,7 +25,9 @@ try {
     }
   });
   const testUrl = process.env.SHARED_TEST_URL || "http://127.0.0.1:5173/";
-  await page.goto(testUrl);
+  const legacyTestUrl = new URL(testUrl);
+  legacyTestUrl.searchParams.set("ui", "v1");
+  await page.goto(legacyTestUrl.href);
   assert.match(
     await page.locator("#demo-label").textContent(),
     /DEMO/,
@@ -71,7 +73,7 @@ try {
       viewport: { width: 1100, height: 900 },
     }),
     guest = await second.newPage();
-  await guest.goto(testUrl);
+  await guest.goto(legacyTestUrl.href);
   await guest.getByRole("button", { name: /The clothesline/ }).click();
   await guest.getByRole("button", { name: "Take a peek" }).click();
   await guest
