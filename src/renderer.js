@@ -51,12 +51,18 @@ void main(){
  float tone=clamp((dyeData.r-.42)/.42,0.,1.);
  float accent=clamp((dyeData.g-.25)/.62,0.,1.);
  float a=atan(p.y,p.x),r=length(p);
- float ridges=sin(r*83.+a*5.+fbm(p*22.)*10.);
- if(uFold>.5&&uFold<1.5)ridges=sin(p.x*91.+fbm(p*22.)*10.);
- if(uFold>1.5&&uFold<2.5)ridges=sin(fbm(p*12.)*45.);
+ float ridges=sin(r*20.+a*2.4+(fbm(p*4.)-.5)*1.5);
+ if(uFold>.5&&uFold<1.5)ridges=sin(p.x*16.+(fbm(p*5.)-.5)*1.25);
+ if(uFold>1.5&&uFold<2.5)ridges=sin(fbm(p*5.2)*9.);
  if(uFold>2.5&&uFold<3.5)ridges=sin(a*5.+r*4.+(fbm(p*4.)-.5)*1.4);
  if(uFold>3.5&&uFold<4.5)ridges=sin((abs(p.x)*.78-p.y)*12.+(fbm(p*5.)-.5)*1.5);
  float resist=smoothstep(-.98,-.48,ridges)*.8+.2;
+ if(uFold<.5)resist=mix(.38,1.,smoothstep(.12,.4,abs(ridges)));
+ if(uFold>.5&&uFold<1.5)resist=mix(.4,1.,smoothstep(.14,.42,abs(ridges)));
+ if(uFold>1.5&&uFold<2.5){
+  float scrunch=fbm(p*5.2+vec2(fbm(p*2.5+8.),fbm(p*2.8-2.))*.9);
+  resist=mix(.4,1.,smoothstep(.27,.7,scrunch));
+ }
  if(uFold>2.5&&uFold<3.5)resist=mix(.42,1.,smoothstep(.1,.34,abs(ridges)));
  if(uFold>3.5&&uFold<4.5)resist=mix(.38,1.,smoothstep(.12,.38,abs(ridges)));
  if(uFold>4.5){
