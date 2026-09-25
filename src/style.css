@@ -3068,6 +3068,80 @@ body.ui-v2:not(.gallery-open) {
   .ui-v2:not(.gallery-open) .dye-settings {
     margin-top: 0;
   }
+  body.ui-v2:not(.gallery-open)[data-step="2"],
+  body.ui-v2:not(.gallery-open)[data-step="4"] {
+    --v2-panel-h: 58dvh;
+  }
+  .ui-v2:not(.gallery-open)[data-step="1"] .step-description,
+  .ui-v2:not(.gallery-open)[data-step="2"] .step-description,
+  .ui-v2:not(.gallery-open)[data-step="3"] .step-description,
+  .ui-v2:not(.gallery-open)[data-step="4"] .finish-heading .step-description {
+    display: none;
+  }
+  .ui-v2:not(.gallery-open)[data-step="1"] .band-visual {
+    height: 62px;
+    margin: 0 0 5px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="1"] .band-pick {
+    height: 60px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="2"] #step-content h2 {
+    margin-bottom: 7px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="2"] .dye-settings {
+    margin-bottom: 4px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="2"] .dye-bottles {
+    margin: 4px 0;
+  }
+  .ui-v2:not(.gallery-open)[data-step="2"] .dye-choice {
+    min-height: 58px;
+    padding: 5px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="2"] .easy-dye {
+    min-height: 38px;
+    margin: 4px 0;
+  }
+  .ui-v2:not(.gallery-open)[data-step="2"] .dye-progress {
+    min-height: 30px;
+    margin: 0 0 4px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="3"] .final-level-card {
+    margin: 8px 0 12px;
+    padding: 10px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="4"] .quest-status {
+    display: none;
+  }
+  .ui-v2:not(.gallery-open)[data-step="4"] .finish-heading h2 {
+    margin-bottom: 5px;
+  }
+  .ui-v2:not(.gallery-open)[data-step="4"] .sticker-tools.empty {
+    min-height: 54px;
+  }
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] .finish-heading {
+    display: none;
+  }
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] .name-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] .name-fields .input-label {
+    margin-top: 0;
+    font-size: 12px;
+  }
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] .name-fields input {
+    min-width: 0;
+    height: 40px;
+    min-height: 40px;
+    padding: 8px;
+    font-size: 14px;
+  }
+  .ui-v2:not(.gallery-open) #step-content[data-finish-tab="share"] .button + .button {
+    margin-top: 5px;
+  }
 }
 
 @media (max-width: 600px) {

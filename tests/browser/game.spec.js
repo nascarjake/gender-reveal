@@ -532,3 +532,43 @@ test("v2 intro fits a short phone without scrolling", async ({ page }) => {
     page.getByRole("heading", { name: "Choose your fold." }),
   ).toBeVisible();
 });
+
+test("every v2 game tray fits a short phone without internal scrolling", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Let’s play" }).click();
+  async function expectTrayToFit() {
+    const dimensions = await page.locator("#step-content").evaluate((element) => ({
+      clientHeight: element.clientHeight,
+      scrollHeight: element.scrollHeight,
+    }));
+    expect(dimensions.scrollHeight).toBeLessThanOrEqual(
+      dimensions.clientHeight + 2,
+    );
+  }
+  await expectTrayToFit();
+  await page.getByRole("button", { name: "Fold my shirt" }).click();
+  await expect(page.getByRole("heading", { name: "Place three bands." })).toBeVisible();
+  await expectTrayToFit();
+  for (let index = 0; index < 3; index++)
+    await page.getByRole("button", { name: /Add a rubber band/ }).click();
+  await page.getByRole("button", { name: "Bring on the dye" }).click();
+  await expect(page.getByRole("heading", { name: "Make a little mess." })).toBeVisible();
+  await expectTrayToFit();
+  await page.screenshot({
+    path: "/tmp/little-secret-v2-short-phone-dye.png",
+    fullPage: true,
+  });
+  await page.getByRole("button", { name: "Surprise me with a mix" }).click();
+  await page.getByRole("button", { name: "Ready for the surprise" }).click();
+  await expect(page.getByRole("heading", { name: "Ready, little love?" })).toBeVisible();
+  await expectTrayToFit();
+  await page.getByRole("button", { name: "Unfold the surprise" }).click();
+  await expect(page.getByRole("heading", { name: "It’s a girl!" })).toBeVisible();
+  await expectTrayToFit();
+  await page.getByRole("button", { name: "Save & share", exact: true }).click();
+  await expect(page.getByLabel("Made by")).toBeVisible();
+  await expectTrayToFit();
+});

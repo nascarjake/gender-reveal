@@ -183,6 +183,7 @@ function renderStep() {
   updateSteps();
   $("#reset-button").disabled = animating || saving;
   const content = $("#step-content");
+  delete content.dataset.finishTab;
   if (step === 0) {
     content.innerHTML = `${
       useV2 ? "" : '<p class="step-kicker">LEVEL 1 · PICK A FOLD</p>'
@@ -300,6 +301,7 @@ function renderStep() {
 }
 function renderFinish(content) {
   const selected = shirt.stickers.find((s) => s.id === selectedSticker);
+  content.dataset.finishTab = finishTab;
   content.innerHTML = `<div class="finish-heading"><p class="step-kicker">${demo ? "QUEST COMPLETE · PRACTICE MAKES LOVELY" : "QUEST COMPLETE · THE CLARK FAMILY IS GROWING"}</p><h2>${color === "pink" ? "It’s a girl!" : "It’s a boy!"}</h2><p class="step-description">${demo ? "A little practice, a whole lot of love." : "Our second little girl. Madison’s going to be a big sister!"}</p></div><div class="finish-tabs" role="tablist" aria-label="Finish your shirt"><button role="tab" id="decorate-tab" aria-controls="finish-panel" aria-selected="${finishTab === "decorate"}">1. Decorate</button><button role="tab" id="share-tab" aria-controls="finish-panel" aria-selected="${finishTab === "share"}">2. Save & share</button></div><div id="finish-panel" role="tabpanel" aria-labelledby="${finishTab === "decorate" ? "decorate-tab" : "share-tab"}"></div>`;
   $("#decorate-tab").onclick = () => {
     finishTab = "decorate";
