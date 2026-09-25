@@ -457,6 +457,23 @@ test("v2 uses a full-screen mobile game stage while preserving the game flow", a
   ).toBeVisible();
 });
 
+test("v2 desktop keeps the fold action visible with every fold choice", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Let’s play" }).click();
+  await expect(page.locator(".fold-option")).toHaveCount(6);
+  const [controls, action] = await Promise.all([
+    page.locator(".controls").boundingBox(),
+    page.locator("#next-button").boundingBox(),
+  ]);
+  expect(action.y).toBeGreaterThanOrEqual(controls.y);
+  expect(action.y + action.height).toBeLessThanOrEqual(
+    controls.y + controls.height,
+  );
+});
+
 test("v2 intro fits a short phone without scrolling", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await page.goto("/");

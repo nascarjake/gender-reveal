@@ -184,7 +184,15 @@ function renderStep() {
   $("#reset-button").disabled = animating || saving;
   const content = $("#step-content");
   if (step === 0) {
-    content.innerHTML = `<p class="step-kicker">LEVEL 1 · PICK A FOLD</p><h2>Choose your fold.</h2><p class="step-description">Every fold makes a different pattern. Pick the one that feels like you.</p><div class="fold-options">${FOLDS.map((f, i) => `<button class="fold-option ${shirt.fold === i ? "selected" : ""}" data-fold="${i}" aria-pressed="${shirt.fold === i}"><span class="fold-symbol fold-${i}" aria-hidden="true">${f.symbol}</span><span><strong>${f.short}</strong><small>${f.description}</small></span><span class="radio-dot"></span></button>`).join("")}</div><button id="next-button" class="button primary">Fold my shirt ${icon("arrow")}</button><p class="button-caption">No wrong choices. Every pattern is one of a kind.</p>`;
+    content.innerHTML = `${
+      useV2 ? "" : '<p class="step-kicker">LEVEL 1 · PICK A FOLD</p>'
+    }<h2>Choose your fold.</h2>${
+      useV2
+        ? ""
+        : '<p class="step-description">Every fold makes a different pattern. Pick the one that feels like you.</p>'
+    }<div class="fold-options">${FOLDS.map((f, i) => `<button class="fold-option ${shirt.fold === i ? "selected" : ""}" data-fold="${i}" aria-pressed="${shirt.fold === i}"><span class="fold-symbol fold-${i}" aria-hidden="true">${f.symbol}</span><span><strong>${f.short}</strong><small>${f.description}</small></span><span class="radio-dot"></span></button>`).join("")}</div><button id="next-button" class="button primary">Fold my shirt ${icon("arrow")}</button>${
+      useV2 ? "" : '<p class="button-caption">No wrong choices. Every pattern is one of a kind.</p>'
+    }`;
     content.querySelectorAll("[data-fold]").forEach((button) =>
       button.addEventListener("click", () => {
         shirt.fold = Number(button.dataset.fold);
