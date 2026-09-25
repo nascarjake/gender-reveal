@@ -26,8 +26,14 @@ test("complete game: WebGL, reveal, customization, download, gallery persistence
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   const canvas = await makeShirt(page);
+  await page.getByRole("button", { name: "Dye B", exact: true }).click();
+  await page.getByRole("button", { name: "Fine", exact: true }).click();
+  const detailBox = await canvas.boundingBox();
+  await canvas.click({
+    position: { x: detailBox.width * 0.61, y: detailBox.height * 0.55 },
+  });
   await expect(page.locator("#canvas-error")).toBeHidden();
-  await expect(page.locator("#drop-count")).toHaveText("5 little splashes");
+  await expect(page.locator("#drop-count")).toHaveText("6 little splashes");
   const before = await canvas.evaluate((c) => {
     const gl = c.getContext("webgl"),
       p = new Uint8Array(c.width * c.height * 4);
@@ -92,6 +98,11 @@ test("complete game: WebGL, reveal, customization, download, gallery persistence
     page.getByRole("heading", { name: "Sunshine & love" }),
   ).toBeVisible();
   await expect(page.getByText("Made by Auntie Test")).toBeVisible();
+  await page.getByRole("button", { name: "Make another shirt" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Choose your fold." }),
+  ).toBeVisible();
+  await expect(page.locator("#edition")).toHaveText("NO. 002");
   await page.reload();
   await page.getByRole("button", { name: /The clothesline/ }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
@@ -163,7 +174,7 @@ async function revealWithButtons(page) {
   for (let i = 0; i < 3; i++)
     await page.getByRole("button", { name: /Add a rubber band/ }).click();
   await page.getByRole("button", { name: "Bring on the dye" }).click();
-  await page.getByRole("button", { name: "Add a few splashes for me" }).click();
+  await page.getByRole("button", { name: "Surprise me with a mix" }).click();
   await page.getByRole("button", { name: "Ready for the surprise" }).click();
   await page.getByRole("button", { name: "Unfold the surprise" }).click();
   await expect(
@@ -281,7 +292,7 @@ for (const viewport of [
       fullPage: true,
     });
     await page
-      .getByRole("button", { name: "Add a few splashes for me" })
+      .getByRole("button", { name: "Surprise me with a mix" })
       .click();
     await page.getByRole("button", { name: "Ready for the surprise" }).click();
     await page.getByRole("button", { name: "Unfold the surprise" }).click();

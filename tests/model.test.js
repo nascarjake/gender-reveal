@@ -16,7 +16,11 @@ test("dye data stays inside shader limits and records placement and shades", () 
   const shirt = createShirt();
   addDrop(shirt, 0.1, -0.3, 2);
   assert.deepEqual(shirt.drops[0], [0.1, -0.3, 2, 0.19]);
+  const mixed = createShirt();
+  addDrop(mixed, -0.2, 0.4, 1, 0.08, 1);
+  assert.deepEqual(mixed.drops[0], [-0.2, 0.4, 4, 0.08]);
   assert.equal(addDrop(shirt, NaN, 0, 0), false);
+  assert.equal(addDrop(shirt, 0, 0, 0, 0.1, NaN), false);
   for (let i = 0; i < 80; i++) addDrop(shirt, 8, -8, 9);
   assert.equal(shirt.drops.length, 64);
   assert.deepEqual(shirt.drops[1], [1, -1, 2, 0.19]);

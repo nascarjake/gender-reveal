@@ -6,7 +6,7 @@ uniform vec2 uResolution;
 uniform float uFolded,uReveal,uSeed,uFold,uBands;
 uniform int uCount;
 uniform vec4 uDrops[64];
-uniform vec3 uColor;
+uniform vec3 uColor,uAccentColor;
 uniform vec2 uBandLines[3];
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7))+uSeed)*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
@@ -40,9 +40,10 @@ void main(){
  float shadow=(1.-smoothstep(-.01,.065,mix(shirt(p-vec2(.018,-.034)),bundle(p-vec2(.018,-.034)),uFolded)))*.14;
  vec2 dyeP=mix(foldedPoint(p),p,uFolded);
  dyeP+=(vec2(fbm(p*32.),fbm(p*37.+10.))-.5)*.038;
- float density=0.,tone=0.;
- for(int i=0;i<64;i++){if(i>=uCount)break;vec4 drop=uDrops[i];float d=length(dyeP-drop.xy);float ink=exp(-d*d/(drop.w*drop.w*.75));density+=ink;tone+=ink*(drop.z*.5);}
+ float density=0.,tone=0.,accent=0.;
+ for(int i=0;i<64;i++){if(i>=uCount)break;vec4 drop=uDrops[i];float d=length(dyeP-drop.xy);float ink=exp(-d*d/(drop.w*drop.w*.75));float palette=floor(drop.z/3.);float strength=mod(drop.z,3.);density+=ink;tone+=ink*(strength*.5);accent+=ink*palette;}
  tone/=max(.001,density);
+ accent/=max(.001,density);
  float a=atan(p.y,p.x),r=length(p);
  float ridges=sin(r*83.+a*5.+fbm(p*22.)*10.);
  if(uFold>.5&&uFold<1.5)ridges=sin(p.x*91.+fbm(p*22.)*10.);
@@ -52,7 +53,8 @@ void main(){
  for(int i=0;i<3;i++){if(float(i)>=uBands)break;vec2 band=uBandLines[i];float d=abs(dot(dyeP,vec2(cos(band.x),sin(band.x)))-band.y);tiedResist*=mix(.32,1.,smoothstep(.008,.025,d));}
  float stain=clamp(density*.77,0.,1.)*mix(resist,.86,uFolded)*mix(tiedResist,1.,uFolded);
  vec3 grey=mix(vec3(.65),vec3(.19),tone);
- vec3 dye=mix(mix(uColor,vec3(1.),.43*(1.-tone)),uColor*.56,tone*.6);
+ vec3 secretColor=mix(uColor,uAccentColor,clamp(accent,0.,1.));
+ vec3 dye=mix(mix(secretColor,vec3(1.),.43*(1.-tone)),secretColor*.56,tone*.6);
  vec3 ink=mix(grey,dye,uReveal);
  vec3 cloth=mix(vec3(.98,.975,.96),ink,stain);
  float wrinkles=(sin(p.x*49.+sin(p.y*11.)*2.)*.02+sin(p.y*24.+p.x*9.)*.012)*(1.-uFolded);
@@ -115,6 +117,7 @@ export class ShirtRenderer {
         "uCount",
         "uDrops[0]",
         "uColor",
+        "uAccentColor",
       ].map((n) => [n, gl.getUniformLocation(this.program, n)]),
     );
   }
@@ -143,6 +146,10 @@ export class ShirtRenderer {
     gl.uniform3fv(
       u.uColor,
       color === "pink" ? [0.94, 0.26, 0.5] : [0.18, 0.49, 0.93],
+    );
+    gl.uniform3fv(
+      u.uAccentColor,
+      color === "pink" ? [0.68, 0.34, 0.82] : [0.12, 0.72, 0.78],
     );
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }

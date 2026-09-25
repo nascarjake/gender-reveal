@@ -19,17 +19,21 @@ let selectedSticker = null,
 let shirt = createShirt(),
   step = 0,
   shade = 1,
+  dyeFamily = 0,
+  brush = 1,
   folded = 0,
   reveal = 0,
   animating = false,
   saved = false,
   saving = false,
   hasRevealed = false,
-  view = "studio";
+  view = "studio",
+  shirtNumber = 1;
 let renderer,
   animationFrame,
   keyboardPoint = { x: 0, y: 0 };
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+const BRUSH_SIZES = [0.085, 0.145, 0.225];
 const $ = (s) => document.querySelector(s);
 const icons = {
   shirt: '<path d="m8 3-5 4 3 5 2-1v10h8V11l2 1 3-5-5-4c-1 3-7 3-8 0Z"/>',
@@ -54,7 +58,7 @@ $("#app").innerHTML = `
 </div>
 <div class="under-workspace"><span>NO TWO SHIRTS ALIKE. JUST LIKE NO LOVE QUITE LIKE THIS.</span><span>Fold it. Dye it. Feel all the feelings. <span class="tiny-flower">✳</span></span></div>
 </section>
-<section id="gallery-view" hidden><div class="gallery-heading"><p class="eyebrow">A WHOLE LOT OF LOVE, HUNG UP TO DRY.</p><h1>Our little <em>clothesline.</em></h1><p id="gallery-description"></p><button class="button secondary" id="back-to-studio">${icon("shirt")} Back to my shirt</button></div><div id="gallery-items" class="clothesline"></div><button class="text-button gallery-refresh" id="refresh-gallery">${icon("reset")} Refresh the clothesline</button></section>
+<section id="gallery-view" hidden><div class="gallery-heading"><p class="eyebrow">A WHOLE LOT OF LOVE, HUNG UP TO DRY.</p><h1>Our little <em>clothesline.</em></h1><p id="gallery-description"></p><div class="gallery-actions"><button class="button secondary" id="back-to-studio">${icon("shirt")} Back to my shirt</button><button class="button primary" id="new-shirt">Make another shirt ${icon("arrow")}</button></div></div><div id="gallery-items" class="clothesline"></div><button class="text-button gallery-refresh" id="refresh-gallery">${icon("reset")} Refresh the clothesline</button></section>
 </main><footer><span>a little secret<span class="brand-dot">.</span></span><p>The Clark family · Est. 2021</p><span id="demo-label">${demo ? "DEMO STUDIO · SAMPLE REVEAL" : "MADE FOR OUR FAVORITE PEOPLE"}</span></footer>
 <div id="toast" role="status" aria-live="polite"></div>
 <dialog id="reset-dialog"><form method="dialog"><span class="dialog-flower">✳</span><h2>A fresh little start?</h2><p>Your current shirt will be cleared. Download it or hang it up first if you want to keep it.</p><div class="dialog-actions"><button value="cancel" class="button secondary">Keep this shirt</button><button value="reset" class="button primary">Start fresh ${icon("arrow")}</button></div></form></dialog>
@@ -194,7 +198,21 @@ function renderStep() {
       );
     };
   } else if (step === 2) {
-    content.innerHTML = `<p class="step-kicker">LEVEL 3 · ADD THE DYE</p><h2>Make a little mess.</h2><p class="step-description">Choose a secret shade, then tap or drag on the shirt. Every splash changes the pattern.</p><div class="dye-bottles" role="group" aria-label="Secret dye shade">${["Soft", "Medium", "Deep"].map((label, i) => `<button class="dye-choice ${shade === i ? "selected" : ""}" data-shade="${i}" aria-pressed="${shade === i}" aria-label="${label} dye"><span class="bottle bottle-${i}"><span class="bottle-mark">${["Ⅰ", "Ⅱ", "Ⅲ"][i]}</span></span><strong>${label}</strong></button>`).join("")}</div><button class="button secondary easy-dye" id="help-dye">Add a few splashes for me ✧</button><div class="dye-progress"><span id="drop-count">${shirt.drops.length} little splashes</span><button class="text-button" id="undo-dye" ${!shirt.drops.length ? "disabled" : ""}>Undo</button></div><button class="button primary" id="next-button" ${canAdvance(step, shirt) ? "" : "disabled"}>Ready for the surprise ${icon("arrow")}</button><p class="button-caption" id="dye-caption">${shirt.drops.length < 3 ? "Add at least 3 splashes. Make it wonderfully you." : "A little white space makes a lovely pattern, too."}</p><p class="keyboard-help">Keyboard: arrow keys to aim, Space to squirt.</p>`;
+    content.innerHTML = `<p class="step-kicker">LEVEL 3 · MIX & DYE</p><h2>Make a little mess.</h2><p class="step-description">Mix secret colors, shades, and splash sizes. Everything stays gray until the reveal.</p><div class="dye-settings"><div class="dye-setting"><span>Secret color</span><div role="group" aria-label="Secret dye color">${["Dye A", "Dye B"].map((label, i) => `<button class="setting-choice family-${i} ${dyeFamily === i ? "selected" : ""}" data-family="${i}" aria-pressed="${dyeFamily === i}"><span aria-hidden="true">${i ? "B" : "A"}</span>${label}</button>`).join("")}</div></div><div class="dye-setting"><span>Splash size</span><div role="group" aria-label="Splash size">${["Fine", "Medium", "Bold"].map((label, i) => `<button class="setting-choice ${brush === i ? "selected" : ""}" data-brush="${i}" aria-pressed="${brush === i}">${label}</button>`).join("")}</div></div></div><div class="dye-bottles" role="group" aria-label="Secret dye shade">${["Soft", "Medium", "Deep"].map((label, i) => `<button class="dye-choice ${shade === i ? "selected" : ""}" data-shade="${i}" aria-pressed="${shade === i}" aria-label="${label} shade"><span class="bottle bottle-${i} family-${dyeFamily}"><span class="bottle-mark">${["Ⅰ", "Ⅱ", "Ⅲ"][i]}</span></span><strong>${label}</strong></button>`).join("")}</div><button class="button secondary easy-dye" id="help-dye">Surprise me with a mix ✧</button><div class="dye-progress"><span id="drop-count">${shirt.drops.length} little splashes</span><button class="text-button" id="undo-dye" ${!shirt.drops.length ? "disabled" : ""}>Undo</button></div><button class="button primary" id="next-button" ${canAdvance(step, shirt) ? "" : "disabled"}>Ready for the surprise ${icon("arrow")}</button><p class="button-caption" id="dye-caption">${shirt.drops.length < 3 ? "Add at least 3 splashes. Make it wonderfully you." : "Try both dyes or change the splash size for a one-of-a-kind pattern."}</p><p class="keyboard-help">Keyboard: arrow keys to aim, Space to squirt.</p>`;
+    content.querySelectorAll("[data-family]").forEach(
+      (button) =>
+        (button.onclick = () => {
+          dyeFamily = Number(button.dataset.family);
+          renderStep();
+        }),
+    );
+    content.querySelectorAll("[data-brush]").forEach(
+      (button) =>
+        (button.onclick = () => {
+          brush = Number(button.dataset.brush);
+          renderStep();
+        }),
+    );
     content.querySelectorAll("[data-shade]").forEach(
       (b) =>
         (b.onclick = () => {
@@ -210,6 +228,11 @@ function renderStep() {
           shirt.fold === 1
             ? { x: (Math.random() - 0.5) * 0.4, y: (Math.random() - 0.5) * 1.1 }
             : { x: Math.cos(a) * r, y: Math.sin(a) * r },
+          {
+            shade: Math.floor(Math.random() * 3),
+            family: Math.floor(Math.random() * 2),
+            brush: Math.floor(Math.random() * 3),
+          },
         );
       }
     };
@@ -327,13 +350,14 @@ function renderFinish(content) {
       };
     }
   } else {
-    panel.innerHTML = `<div class="name-fields"><div><label class="input-label" for="guest-name">Made by <span>optional</span></label><input id="guest-name" maxlength="32" placeholder="Your name" autocomplete="given-name" ${saved ? "disabled" : ""}/></div><div><label class="input-label" for="shirt-title">Give your tee a name <span>optional</span></label><input id="shirt-title" maxlength="48" placeholder="A little ray of sunshine" ${saved ? "disabled" : ""}/></div></div><button class="button primary" id="save-shirt" ${saved ? "disabled" : ""}>${icon("line")}${saved ? "Hanging with love!" : saving ? "Hanging your shirt…" : "Hang it on the clothesline"}</button><button class="button secondary" id="download-shirt">${icon("download")} Save my shirt</button><p class="button-caption">${sharedGallery ? "A little hello from everyone who loves her." : "This clothesline is saved on this device."}</p>`;
+    panel.innerHTML = `<div class="name-fields"><div><label class="input-label" for="guest-name">Made by <span>optional</span></label><input id="guest-name" maxlength="32" placeholder="Your name" autocomplete="given-name" ${saved ? "disabled" : ""}/></div><div><label class="input-label" for="shirt-title">Give your tee a name <span>optional</span></label><input id="shirt-title" maxlength="48" placeholder="A little ray of sunshine" ${saved ? "disabled" : ""}/></div></div><button class="button primary" id="save-shirt" ${saved ? "disabled" : ""}>${icon("line")}${saved ? "Hanging with love!" : saving ? "Hanging your shirt…" : "Hang it on the clothesline"}</button><button class="button secondary" id="download-shirt">${icon("download")} Save my shirt</button><button class="text-button make-another-inline" id="make-another-inline">${icon("reset")} Make another shirt</button><p class="button-caption">${sharedGallery ? "A little hello from everyone who loves her." : "This clothesline is saved on this device."}</p>`;
     $("#guest-name").value = shirt.name;
     $("#shirt-title").value = shirt.title;
     $("#guest-name").oninput = (e) => (shirt.name = e.target.value);
     $("#shirt-title").oninput = (e) => (shirt.title = e.target.value);
     $("#save-shirt").onclick = hangShirt;
     $("#download-shirt").onclick = downloadShirt;
+    $("#make-another-inline").onclick = startAnotherShirt;
   }
 }
 function updateStickerSize() {
@@ -398,16 +422,28 @@ function tieBand(point) {
   renderStep();
   draw();
 }
-function dyeAt(point) {
+function dyeAt(point, options = {}) {
   if (step !== 2 || animating || !renderer.contains(point, shirt.fold)) return;
-  if (addDrop(shirt, point.x, point.y, shade, 0.16 + Math.random() * 0.09)) {
+  const selectedShade = options.shade ?? shade;
+  const selectedFamily = options.family ?? dyeFamily;
+  const selectedBrush = options.brush ?? brush;
+  if (
+    addDrop(
+      shirt,
+      point.x,
+      point.y,
+      selectedShade,
+      BRUSH_SIZES[selectedBrush],
+      selectedFamily,
+    )
+  ) {
     draw();
     $("#drop-count").textContent = `${shirt.drops.length} little splashes`;
     $("#undo-dye").disabled = false;
     $("#next-button").disabled = !canAdvance(step, shirt);
     if (shirt.drops.length >= 3)
       $("#dye-caption").textContent =
-        "A little white space makes a lovely pattern, too.";
+        "Try another dye or splash size to make the pattern even more yours.";
   } else
     notify("Your tee is full of love! Undo a splash or get ready to reveal.");
 }
@@ -428,7 +464,10 @@ $("#shirt-canvas").addEventListener("pointerdown", (e) => {
 $("#shirt-canvas").addEventListener("pointermove", (e) => {
   if (!painting || step !== 2) return;
   const p = renderer.point(e);
-  if (Math.hypot(p.x - lastPoint.x, p.y - lastPoint.y) > 0.075) {
+  if (
+    Math.hypot(p.x - lastPoint.x, p.y - lastPoint.y) >
+    Math.max(0.032, BRUSH_SIZES[brush] * 0.4)
+  ) {
     dyeAt(p);
     lastPoint = p;
   }
@@ -524,7 +563,7 @@ function snapshot(size = 1000, forGallery = false) {
     size * 0.85,
   );
   ctx.fillStyle = "#747666";
-  ctx.font = `${size * 0.013}px sans-serif`;
+  ctx.font = `600 ${size * 0.016}px sans-serif`;
   ctx.fillText(
     demo
       ? "A LITTLE SECRET · DEMO SHIRT"
@@ -608,6 +647,39 @@ function showStudio() {
   $("#gallery-nav").classList.remove("active");
   resize();
 }
+function resetShirt() {
+  cancelAnimationFrame(animationFrame);
+  shirt = createShirt();
+  shirtNumber += 1;
+  step = 0;
+  shade = 1;
+  dyeFamily = 0;
+  brush = 1;
+  folded = 0;
+  reveal = 0;
+  saved = false;
+  saving = false;
+  animating = false;
+  keyboardPoint = { x: 0, y: 0 };
+  selectedSticker = null;
+  finishTab = "decorate";
+  $("#reveal-badge").hidden = true;
+  $("#edition").textContent = `NO. ${String(shirtNumber).padStart(3, "0")}`;
+  $(".workbench").classList.remove("revealed", "pink", "blue");
+  $("#bench-hint").textContent = "Your blank canvas. So many possibilities.";
+  setCanvasLabel("Your shirt. Choose a fold to get started.");
+  renderStep();
+  draw();
+}
+function startAnotherShirt() {
+  if (!saved && step > 0) {
+    $("#reset-dialog").showModal();
+    return;
+  }
+  resetShirt();
+  showStudio();
+  notify("A fresh shirt is ready for you.");
+}
 async function showGallery() {
   view = "gallery";
   document.body.classList.add("gallery-open");
@@ -674,27 +746,13 @@ $(".brand").onclick = (e) => {
   showStudio();
 };
 $("#back-to-studio").onclick = showStudio;
+$("#new-shirt").onclick = startAnotherShirt;
 $("#refresh-gallery").onclick = showGallery;
 $("#reset-button").onclick = () => $("#reset-dialog").showModal();
 $("#reset-dialog").addEventListener("close", () => {
   if ($("#reset-dialog").returnValue !== "reset") return;
-  cancelAnimationFrame(animationFrame);
-  shirt = createShirt();
-  step = 0;
-  shade = 1;
-  folded = 0;
-  reveal = 0;
-  saved = false;
-  animating = false;
-  keyboardPoint = { x: 0, y: 0 };
-  selectedSticker = null;
-  finishTab = "decorate";
-  $("#reveal-badge").hidden = true;
-  $(".workbench").classList.remove("revealed", "pink", "blue");
-  $("#bench-hint").textContent = "Your blank canvas. So many possibilities.";
-  setCanvasLabel("Your shirt. Choose a fold to get started.");
-  renderStep();
-  draw();
+  resetShirt();
+  showStudio();
 });
 $("#shirt-canvas").addEventListener("webglcontextlost", (event) => {
   event.preventDefault();

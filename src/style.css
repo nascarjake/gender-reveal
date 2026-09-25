@@ -293,8 +293,9 @@ h1 em {
 .bench-bottom {
   min-height: 64px;
   gap: 20px;
-  font-size: 14px;
-  color: #747b64;
+  font-size: 16px;
+  font-weight: 500;
+  color: #5f6653;
 }
 #bench-hint {
   max-width: 65%;
@@ -560,12 +561,12 @@ h2 {
   flex-shrink: 0;
 }
 .secret-note p {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.7;
   margin: 0;
 }
 .secret-note p span {
-  font-size: 11px;
+  font-size: 13px;
   color: #9b9e91;
 }
 .under-workspace {
@@ -577,11 +578,12 @@ h2 {
   color: #929885;
 }
 .under-workspace > span:first-child {
-  font-size: 11px;
-  letter-spacing: 1.2px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
 }
 .under-workspace > span:last-child {
-  font: italic 13px Georgia;
+  font: italic 16px/1.45 Georgia;
 }
 .tiny-flower {
   font-size: 23px;
@@ -603,11 +605,11 @@ footer > span:first-child {
   color: #788064;
 }
 footer p {
-  font: italic 13px Georgia;
+  font: italic 14px Georgia;
   margin: 0;
 }
 footer > span:last-child {
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 1px;
 }
 .band-visual {
@@ -647,6 +649,62 @@ footer > span:last-child {
   display: flex;
   gap: 12px;
   margin: 30px 0 16px;
+}
+.dye-settings {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+.dye-setting > span {
+  display: block;
+  margin-bottom: 7px;
+  color: #717761;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+.dye-setting > div {
+  display: flex;
+  gap: 5px;
+}
+.setting-choice {
+  min-width: 0;
+  min-height: 39px;
+  flex: 1;
+  padding: 6px 7px;
+  border: 1px solid #d2d7c3;
+  border-radius: 7px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+}
+.setting-choice.selected {
+  border-color: #8e9b71;
+  background: #eef1dd;
+  box-shadow: inset 0 0 0 1px #c5cfaa;
+}
+.setting-choice span {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: #989b91;
+  color: white;
+  font-size: 11px;
+}
+.setting-choice.family-1 span,
+.bottle.family-1 {
+  background-image: repeating-linear-gradient(
+    135deg,
+    #74776f 0,
+    #74776f 5px,
+    #a7a9a1 5px,
+    #a7a9a1 10px
+  );
 }
 .dye-choice {
   border: 1px solid var(--line);
@@ -801,7 +859,7 @@ footer > span:last-child {
 }
 .reveal-badge span {
   display: block;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 1.2px;
   margin-bottom: 5px;
@@ -954,6 +1012,23 @@ dialog h2 {
 .gallery-heading .button {
   width: max-content;
   margin: 0 auto;
+}
+.gallery-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.gallery-heading .gallery-actions .button {
+  width: auto;
+  margin: 0;
+}
+.make-another-inline {
+  display: flex;
+  width: max-content;
+  min-height: 42px;
+  margin: 13px auto 0;
+  font-size: 14px;
+  font-weight: 600;
 }
 .clothesline {
   display: grid;
@@ -1141,7 +1216,7 @@ dialog h2 {
     height: 42px;
   }
   .nav-link {
-    font-size: 13px;
+    font-size: 14px;
     align-items: flex-start;
     padding-top: 4px;
   }
@@ -1965,6 +2040,24 @@ body[data-step="4"] .secret-note {
     gap: 9px;
     justify-content: stretch;
   }
+  .dye-settings {
+    gap: 8px;
+    margin: 2px 0 6px;
+  }
+  .dye-setting > span {
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+  .setting-choice {
+    min-height: 36px;
+    padding: 5px;
+    font-size: 13px;
+  }
+  .setting-choice span {
+    width: 19px;
+    height: 19px;
+    font-size: 10px;
+  }
   .dye-choice {
     max-width: none;
     flex-direction: row;
@@ -2038,8 +2131,15 @@ body[data-step="4"] .secret-note {
   .reveal-badge strong {
     font-size: 17px;
   }
+  body[data-step="4"] .bench-bottom {
+    min-height: 44px;
+    height: 44px;
+  }
   body[data-step="4"] .bench-bottom #bench-hint {
-    visibility: hidden;
+    visibility: visible;
+    max-width: 70%;
+    font-size: 13px;
+    line-height: 1.2;
   }
   .finish-heading .step-description {
     margin-bottom: 5px;
@@ -2144,6 +2244,12 @@ body[data-step="4"] .secret-note {
   .sticker-palette .sticker-choice {
     min-width: 28px;
   }
+  .setting-choice {
+    font-size: 12px;
+  }
+  .setting-choice span {
+    display: none;
+  }
   .band-visual {
     gap: 8px;
   }
@@ -2159,6 +2265,9 @@ body[data-step="4"] .secret-note {
     height: 30px;
     min-height: 30px;
     flex-basis: 30px;
+  }
+  .quest-status {
+    display: none;
   }
   .workspace {
     grid-template-rows: minmax(150px, 33%) minmax(0, 1fr);
@@ -2256,5 +2365,10 @@ body[data-step="4"] .secret-note {
     position: sticky;
     bottom: 0;
     z-index: 1;
+  }
+}
+@media (max-width: 900px) and (orientation: portrait) {
+  body[data-step="2"] .workspace {
+    grid-template-rows: minmax(155px, 34%) minmax(0, 1fr);
   }
 }

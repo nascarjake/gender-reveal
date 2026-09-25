@@ -35,14 +35,23 @@ export function createShirt() {
     stickers: [],
   };
 }
-export function addDrop(shirt, x, y, shade, size = 0.19) {
-  if (shirt.drops.length >= 64 || !Number.isFinite(x) || !Number.isFinite(y))
+export function addDrop(shirt, x, y, shade, size = 0.19, palette = 0) {
+  if (
+    shirt.drops.length >= 64 ||
+    !Number.isFinite(x) ||
+    !Number.isFinite(y) ||
+    !Number.isFinite(shade) ||
+    !Number.isFinite(size) ||
+    !Number.isFinite(palette)
+  )
     return false;
+  const safeShade = Math.max(0, Math.min(2, shade));
+  const safePalette = Math.max(0, Math.min(1, palette));
   shirt.drops.push([
     Math.max(-1, Math.min(1, x)),
     Math.max(-1, Math.min(1, y)),
-    Math.max(0, Math.min(2, shade)),
-    size,
+    safeShade + safePalette * 3,
+    Math.max(0.075, Math.min(0.25, size)),
   ]);
   return true;
 }

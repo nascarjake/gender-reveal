@@ -1,6 +1,6 @@
 # A little secret
 
-A WebGL tie-dye game for a baby reveal. Guests choose a spiral, accordion, or scrunch fold, drag three rubber bands onto the fabric (or add them with a button), and paint with three grayscale dye shades. Opening the shirt reveals a pink or blue pattern shaped by their dye placement. They can add a name, title, and up to eight draggable, resizable stickers, download a PNG, and hang it on a shared clothesline.
+A WebGL tie-dye game for a baby reveal. Guests choose a spiral, accordion, or scrunch fold, drag three rubber bands onto the fabric (or add them with a button), and paint with two secret dye colors, three shade strengths, and three splash sizes. Everything stays grayscale until opening the shirt reveals a pink or blue pattern shaped by their exact dye placement. They can add a name, title, and up to eight draggable, resizable stickers, download a PNG, hang it on a shared clothesline, and start another numbered shirt.
 
 The game is a static **GitHub Pages** site. A small **Cloudflare Worker + D1** service stores shared shirts; guests do not need to sign in. Demo, pink, and blue collections are separate.
 
